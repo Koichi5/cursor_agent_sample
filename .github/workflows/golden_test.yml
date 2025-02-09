@@ -33,16 +33,17 @@ jobs:
         run: |
           mkdir -p test/golden/counter_samples/goldens/base
           git checkout ${{ github.base_ref }}
-          flutter test --update-goldens test/golden/counter_samples/counter_test.dart || true
-          cp test/golden/counter_samples/goldens/signals_counter_*.png test/golden/counter_samples/goldens/base/
+          flutter pub get
+          flutter test --update-goldens --tags=golden test/golden/counter_samples/counter_test.dart || true
+          cp test/golden/counter_samples/goldens/*.png test/golden/counter_samples/goldens/base/
 
       - name: Create current images
         run: |
           mkdir -p test/golden/counter_samples/goldens/current
           git checkout ${{ github.head_ref }}
           flutter pub get
-          flutter test --update-goldens test/golden/counter_samples/counter_test.dart || true
-          cp test/golden/counter_samples/goldens/signals_counter_*.png test/golden/counter_samples/goldens/current/
+          flutter test --update-goldens --tags=golden test/golden/counter_samples/counter_test.dart || true
+          cp test/golden/counter_samples/goldens/*.png test/golden/counter_samples/goldens/current/
 
       - name: Compare images
         id: compare
