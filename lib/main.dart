@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cursor_agent_sample/views/my_home_page/my_home_page.dart';
 import 'package:cursor_agent_sample/views/profile_page/profile_page.dart';
+import 'package:cursor_agent_sample/views/settings_page/settings_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,6 +43,7 @@ class _RootPageState extends State<RootPage> {
   final List<Widget> _pages = [
     const MyHomePage(title: 'Flutter Demo'),
     const ProfilePage(title: 'プロフィール'),
+    const SettingsPage(title: '設定'),
   ];
 
   @override
@@ -78,6 +80,17 @@ class _RootPageState extends State<RootPage> {
               color: theme.colorScheme.onSecondaryContainer,
             ),
             label: 'プロフィール',
+          ),
+          NavigationDestination(
+            icon: Icon(
+              Icons.settings_outlined,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            selectedIcon: Icon(
+              Icons.settings_rounded,
+              color: theme.colorScheme.onSecondaryContainer,
+            ),
+            label: '設定',
           ),
         ],
       ),
