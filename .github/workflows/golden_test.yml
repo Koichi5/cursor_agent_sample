@@ -36,6 +36,12 @@ jobs:
           files: |
             lib/views/**/*.dart
 
+      - name: Clean workspace
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          rm -rf test/views/*/failures
+          rm -rf test/views/*/goldens/ci
+
       - name: Create base images
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
@@ -48,12 +54,16 @@ jobs:
               if [ -f "$test_path" ]; then
                 echo "Running Golden Test for $component_name (base)"
                 flutter test --update-goldens "$test_path"
-                # マスター画像として保存
                 mkdir -p "test/views/${component_name}_test/failures"
                 cp "test/views/${component_name}_test/goldens/ci/my_app_default.png" "test/views/${component_name}_test/failures/my_app_default_masterImage.png"
               fi
             fi
           done
+
+      - name: Clean workspace for test images
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          rm -rf test/views/*/goldens/ci
 
       - name: Create test images
         if: steps.changed-files.outputs.any_changed == 'true'
@@ -67,7 +77,6 @@ jobs:
               if [ -f "$test_path" ]; then
                 echo "Running Golden Test for $component_name (test)"
                 flutter test --update-goldens "$test_path"
-                # テスト画像として保存
                 cp "test/views/${component_name}_test/goldens/ci/my_app_default.png" "test/views/${component_name}_test/failures/my_app_default_testImage.png"
               fi
             fi
