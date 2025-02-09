@@ -39,7 +39,7 @@ jobs:
       - name: Create base images
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
-          git checkout ${{ github.base_ref }}
+          git checkout -f ${{ github.base_ref }}
           flutter pub get
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
@@ -57,7 +57,7 @@ jobs:
       - name: Create test images
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
-          git checkout ${{ github.head_ref }}
+          git checkout -f ${{ github.head_ref }}
           flutter pub get
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
