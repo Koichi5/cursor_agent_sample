@@ -36,6 +36,47 @@ jobs:
           files: |
             lib/views/**/*.dart
 
+      - name: Check for new views
+        if: steps.changed-files.outputs.any_changed == 'true'
+        id: check-new-views
+        run: |
+          has_new_views=false
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == lib/views/* ]]; then
+              component_name=$(basename ${file%.*})
+              test_dir="test/views/${component_name}_test"
+              golden_image="$test_dir/goldens/ci/my_app_default.png"
+              if [ ! -f "$golden_image" ]; then
+                has_new_views=true
+                echo "New view detected: $component_name"
+                break
+              fi
+            fi
+          done
+          echo "has_new_views=$has_new_views" >> $GITHUB_OUTPUT
+
+      - name: Initialize Golden images for new views
+        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-new-views.outputs.has_new_views == 'true'
+        run: |
+          git checkout -f ${{ github.head_ref }}
+          flutter pub get
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == lib/views/* ]]; then
+              component_name=$(basename ${file%.*})
+              test_path="test/views/${component_name}_test/${component_name}_test.dart"
+              test_dir="test/views/${component_name}_test"
+              golden_image="$test_dir/goldens/ci/my_app_default.png"
+              if [ ! -f "$golden_image" ] && [ -f "$test_path" ]; then
+                echo "Initializing Golden Test for $component_name"
+                mkdir -p "$test_dir/goldens/ci"
+                mkdir -p "$test_dir/failures"
+                flutter test --update-goldens "$test_path"
+                cp "$test_dir/goldens/ci/my_app_default.png" "$test_dir/failures/my_app_default_masterImage.png"
+                cp "$test_dir/goldens/ci/my_app_default.png" "$test_dir/failures/my_app_default_testImage.png"
+              fi
+            fi
+          done
+
       - name: Create base images
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
@@ -66,6 +107,7 @@ jobs:
               if [ -f "$test_path" ]; then
                 echo "Running Golden Test for $component_name (test)"
                 flutter test --update-goldens "$test_path"
+                mkdir -p "test/views/${component_name}_test/failures"
                 cp "test/views/${component_name}_test/goldens/ci/my_app_default.png" "test/views/${component_name}_test/failures/my_app_default_testImage.png"
               fi
             fi
@@ -109,7 +151,7 @@ jobs:
           echo "UI changes detected: $has_changes"
 
       - name: Commit and push images
-        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes == 'true'
+        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -121,11 +163,11 @@ jobs:
           git push -f origin ${{ github.head_ref }}
 
       - name: Wait for images to be available
-        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes == 'true'
+        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         run: sleep 10
 
       - name: Generate comparison markdown
-        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes == 'true'
+        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         id: generate-markdown
         run: |
           echo "Generating comparison markdown..."
@@ -151,7 +193,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Update PR description
-        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes == 'true'
+        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -171,6 +213,6 @@ jobs:
           gh pr edit ${{ github.event.pull_request.number }} --body "$pr_body"
 
       - name: No UI changes detected
-        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes != 'true'
+        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes != 'true' && steps.check-new-views.outputs.has_new_views != 'true'
         run: |
           echo "No UI changes were detected in the Golden Test images."
