@@ -31,15 +31,16 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(32.0),
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
               decoration: BoxDecoration(
                 color: theme.colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: BorderRadius.circular(24.0),
                 boxShadow: [
                   BoxShadow(
-                    color: theme.shadowColor.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                    color: theme.shadowColor.withOpacity(0.2),
+                    blurRadius: 15,
+                    offset: const Offset(0, 6),
                   ),
                 ],
               ),
@@ -47,18 +48,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    Icons.touch_app,
-                    size: 48,
+                    Icons.touch_app_rounded,
+                    size: 56,
                     color: theme.colorScheme.primary,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
                   Text(
-                    'ボタンを押した回数',
+                    'タップ回数',
                     style: theme.textTheme.titleLarge?.copyWith(
                       color: theme.colorScheme.onPrimaryContainer,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Text(
                     '$_counter',
                     style: theme.textTheme.displayLarge?.copyWith(
@@ -78,8 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: theme.colorScheme.primary,
         foregroundColor: theme.colorScheme.onPrimary,
         elevation: 4,
-        icon: const Icon(Icons.add),
-        label: const Text('カウントアップ'),
+        icon: const Icon(Icons.add_circle_outline),
+        label: const Text('タップする'),
       ),
     );
   }
