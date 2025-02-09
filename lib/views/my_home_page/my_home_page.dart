@@ -51,39 +51,52 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                padding: const EdgeInsets.all(32.0),
+                padding: const EdgeInsets.all(40.0),
                 margin: const EdgeInsets.symmetric(horizontal: 24.0),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(32.0),
+                  borderRadius: BorderRadius.circular(40.0),
                   boxShadow: [
                     BoxShadow(
-                      color: theme.shadowColor.withOpacity(0.2),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
+                      color: theme.colorScheme.primary.withOpacity(0.1),
+                      blurRadius: 30,
+                      offset: const Offset(0, 10),
+                      spreadRadius: 2,
                     ),
                   ],
                   border: Border.all(
-                    color: theme.colorScheme.primary.withOpacity(0.1),
-                    width: 2,
+                    color: theme.colorScheme.primary.withOpacity(0.2),
+                    width: 3,
                   ),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.touch_app_rounded,
-                        size: 64,
-                        color: theme.colorScheme.primary,
-                      ),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary.withOpacity(0.2),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        Icon(
+                          Icons.touch_app_outlined,
+                          size: 72,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 32),
                     Text(
                       'タップカウンター',
                       style: theme.textTheme.titleLarge?.copyWith(
@@ -92,13 +105,22 @@ class _MyHomePageState extends State<MyHomePage> {
                         letterSpacing: 1.2,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
                       decoration: BoxDecoration(
                         color: theme.colorScheme.primary,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: theme.colorScheme.primary.withOpacity(0.3),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Text(
                         '$_counter',
@@ -109,11 +131,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
                     Text(
                       '回タップしました',
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
+                        letterSpacing: 0.5,
                       ),
                     ),
                   ],
