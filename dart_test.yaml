@@ -1,10 +1,2 @@
 tags:
   golden:
-
-# Golden test configurations
-override_platforms:
-  macos:
-    goldens_dir: test/golden/counter_samples/goldens
-
-# Timeout configuration
-timeout: 2x

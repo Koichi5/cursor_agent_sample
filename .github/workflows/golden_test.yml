@@ -3,8 +3,8 @@ name: Flutter Golden Tests
 on:
   pull_request:
     paths:
-      - "lib/**"
-      - "test/**"
+      - "lib/views/**"
+      - "test/views/**"
       - "pubspec.yaml"
 
 permissions:
@@ -29,53 +29,63 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v42
+        with:
+          files: |
+            lib/views/**/*.dart
+
       - name: Create base images
+        if: steps.changed-files.outputs.any_changed == 'true'
         run: |
-          mkdir -p test/golden/counter_samples/goldens/base
           git checkout ${{ github.base_ref }}
           flutter pub get
-          flutter test --update-goldens --tags=golden test/golden/counter_samples/counter_test.dart || true
-          cp test/golden/counter_samples/goldens/*.png test/golden/counter_samples/goldens/base/
-
-      - name: Create current images
-        run: |
-          mkdir -p test/golden/counter_samples/goldens/current
-          git checkout ${{ github.head_ref }}
-          flutter pub get
-          flutter test --update-goldens --tags=golden test/golden/counter_samples/counter_test.dart || true
-          cp test/golden/counter_samples/goldens/*.png test/golden/counter_samples/goldens/current/
-
-      - name: Compare images
-        id: compare
-        run: |
-          echo "Comparing images..."
-          mkdir -p test/golden/counter_samples/goldens/diff
-          for img in test/golden/counter_samples/goldens/base/*.png; do
-            filename=$(basename "$img")
-            if [ -f "test/golden/counter_samples/goldens/current/$filename" ]; then
-              if ! cmp -s "$img" "test/golden/counter_samples/goldens/current/$filename"; then
-                echo "Changes detected in $filename"
-                echo "::set-output name=changes::true"
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == lib/views/* ]]; then
+              test_path="test/views/$(basename ${file%.*})_test/$(basename ${file%.*})_test.dart"
+              if [ -f "$test_path" ]; then
+                flutter test --update-goldens "$test_path"
+                mkdir -p "$(dirname $test_path)/failures"
+                cp "$(dirname $test_path)/goldens/ci/"*.png "$(dirname $test_path)/failures/"
               fi
             fi
           done
 
-      - name: Create or Update Comment
+      - name: Create current images
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          git checkout ${{ github.head_ref }}
+          flutter pub get
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == lib/views/* ]]; then
+              test_path="test/views/$(basename ${file%.*})_test/$(basename ${file%.*})_test.dart"
+              if [ -f "$test_path" ]; then
+                flutter test --update-goldens "$test_path"
+              fi
+            fi
+          done
+
+      - name: Create PR Comment
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: peter-evans/create-or-update-comment@v3
-        if: always()
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ## Golden Test Results
+            ## UI Changes Review
 
-            ### Initial State
-            | Before | After |
-            |--------|-------|
-            |![Before](test/golden/counter_samples/goldens/base/signals_counter_initial.png)|![After](test/golden/counter_samples/goldens/current/signals_counter_initial.png)|
+            以下のファイルのUI変更がありました：
 
-            ### After Increment
-            | Before | After |
-            |--------|-------|
-            |![Before](test/golden/counter_samples/goldens/base/signals_counter_incremented.png)|![After](test/golden/counter_samples/goldens/current/signals_counter_incremented.png)|
+            ${{ steps.changed-files.outputs.all_changed_files }}
 
-            ${{ steps.compare.outputs.changes == 'true' && '⚠️ UI changes detected. Please review the changes above.' || '✅ No UI changes detected.' }}
+            ### 変更内容の確認
+
+            ${{ join(steps.changed-files.outputs.all_changed_files, '
+
+            #### ') }}の変更：
+
+            | 変更前 | 変更後 |
+            |--------|--------|
+            |![Before](test/views/my_home_page_test/failures/my_app_default_masterImage.png)|![After](test/views/my_home_page_test/goldens/ci/my_app_default.png)|
+
+            変更内容を確認し、意図した通りの変更になっているかご確認ください。

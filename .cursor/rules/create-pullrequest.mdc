@@ -24,6 +24,10 @@ gh pr create --draft --title "{{PRタイトル}}" --body-file - && \
 gh pr view --web
 ---
 
+### Golden Test の実行
+[golden-test.mdc](mdc:.cursor/rules/golden-test.mdc) をもとに、UIに変更があれば実行してください。
+
 #### PRテンプレート
 
-[pull_request_template.md](mdc:docs/pull_request_template.md) からテンプレート内容を取得すること
+[pull-request-template.mdc](mdc:.cursor/rules/pull-request-template.mdc) からテンプレート内容を取得すること
+
