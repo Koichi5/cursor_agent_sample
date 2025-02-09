@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'ボタンを押した回数',
+                    'Botton Tapped Count',
                     style: theme.textTheme.titleLarge?.copyWith(
                       color: theme.colorScheme.onPrimaryContainer,
                     ),
