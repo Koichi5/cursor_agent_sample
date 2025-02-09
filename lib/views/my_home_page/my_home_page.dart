@@ -24,7 +24,14 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: theme.colorScheme.primary,
         foregroundColor: theme.colorScheme.onPrimary,
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: TextStyle(
+            color: theme.colorScheme.onPrimary,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
         elevation: 4,
         centerTitle: true,
       ),
@@ -72,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       child: Icon(
                         Icons.touch_app_rounded,
-                        size: 48,
+                        size: 64,
                         color: theme.colorScheme.primary,
                       ),
                     ),
