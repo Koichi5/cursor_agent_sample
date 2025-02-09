@@ -48,13 +48,14 @@ jobs:
               if [ -f "$test_path" ]; then
                 echo "Running Golden Test for $component_name (base)"
                 flutter test --update-goldens "$test_path"
+                # マスター画像として保存
                 mkdir -p "test/views/${component_name}_test/failures"
-                cp "test/views/${component_name}_test/goldens/ci/"*.png "test/views/${component_name}_test/failures/"
+                cp "test/views/${component_name}_test/goldens/ci/my_app_default.png" "test/views/${component_name}_test/failures/my_app_default_masterImage.png"
               fi
             fi
           done
 
-      - name: Create current images
+      - name: Create test images
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
           git checkout ${{ github.head_ref }}
@@ -64,11 +65,22 @@ jobs:
               component_name=$(basename ${file%.*})
               test_path="test/views/${component_name}_test/${component_name}_test.dart"
               if [ -f "$test_path" ]; then
-                echo "Running Golden Test for $component_name (current)"
+                echo "Running Golden Test for $component_name (test)"
                 flutter test --update-goldens "$test_path"
+                # テスト画像として保存
+                cp "test/views/${component_name}_test/goldens/ci/my_app_default.png" "test/views/${component_name}_test/failures/my_app_default_testImage.png"
               fi
             fi
           done
+
+      - name: Commit and push images
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add test/views/*/failures/*.png test/views/*/goldens/ci/*.png
+          git commit -m "test: Update Golden Test images [skip ci]" || true
+          git push origin ${{ github.head_ref }} || true
 
       - name: Generate comparison markdown
         if: steps.changed-files.outputs.any_changed == 'true'
@@ -76,6 +88,8 @@ jobs:
         run: |
           echo "Generating comparison markdown..."
           markdown=""
+          repo_url="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.head_ref }}"
+
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
               component_name=$(basename ${file%.*})
@@ -84,13 +98,7 @@ jobs:
                 markdown+="### ${component_name} の変更\\n\\n"
                 markdown+="| 変更前 | 変更後 |\\n"
                 markdown+="|--------|--------|\\n"
-
-                for img in $test_dir/goldens/ci/*.png; do
-                  base_img="$test_dir/failures/$(basename $img)"
-                  if [ -f "$base_img" ]; then
-                    markdown+="|![Before]($base_img)|![After]($img)|\\n"
-                  fi
-                done
+                markdown+="|![Before]($repo_url/$test_dir/failures/my_app_default_masterImage.png)|![After]($repo_url/$test_dir/failures/my_app_default_testImage.png)|\\n"
                 markdown+="\\n"
               fi
             fi
@@ -114,6 +122,7 @@ jobs:
 
           ${{ steps.generate-markdown.outputs.markdown }}
 
-          変更内容を確認し、意図した通りの変更になっているかご確認ください。"
+          変更内容を確認し、意図した通りの変更になっているかご確認ください。
+          問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。"
 
           gh pr edit ${{ github.event.pull_request.number }} --body "$pr_body"
