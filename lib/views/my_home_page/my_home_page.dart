@@ -37,14 +37,16 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          image: DecorationImage(
-            image: const NetworkImage('https://picsum.photos/1000'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              theme.colorScheme.primary.withOpacity(0.1),
-              BlendMode.overlay,
-            ),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: const [0.0, 0.3, 0.6, 1.0],
+            colors: [
+              theme.colorScheme.primary.withOpacity(0.05),
+              theme.colorScheme.surface,
+              theme.colorScheme.surface,
+              theme.colorScheme.primaryContainer.withOpacity(0.1),
+            ],
           ),
         ),
         child: Center(
@@ -59,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     vertical: 32.0,
                   ),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.surface.withOpacity(0.8),
+                    color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(40.0),
                     boxShadow: [
                       BoxShadow(
@@ -69,6 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         spreadRadius: -8,
                       ),
                     ],
+                    border: Border.all(
+                      color: theme.colorScheme.outline.withOpacity(0.1),
+                      width: 1,
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
