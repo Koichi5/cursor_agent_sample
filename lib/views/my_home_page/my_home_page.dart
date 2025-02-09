@@ -93,12 +93,20 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      '$_counter',
-                      style: theme.textTheme.displayLarge?.copyWith(
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                      decoration: BoxDecoration(
                         color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                        height: 1,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Text(
+                        '$_counter',
+                        style: theme.textTheme.displayLarge?.copyWith(
+                          color: theme.colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                          height: 1,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8),
