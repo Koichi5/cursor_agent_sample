@@ -43,11 +43,13 @@ jobs:
           flutter pub get
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
-              test_path="test/views/$(basename ${file%.*})_test/$(basename ${file%.*})_test.dart"
+              component_name=$(basename ${file%.*})
+              test_path="test/views/${component_name}_test/${component_name}_test.dart"
               if [ -f "$test_path" ]; then
+                echo "Running Golden Test for $component_name (base)"
                 flutter test --update-goldens "$test_path"
-                mkdir -p "$(dirname $test_path)/failures"
-                cp "$(dirname $test_path)/goldens/ci/"*.png "$(dirname $test_path)/failures/"
+                mkdir -p "test/views/${component_name}_test/failures"
+                cp "test/views/${component_name}_test/goldens/ci/"*.png "test/views/${component_name}_test/failures/"
               fi
             fi
           done
@@ -59,33 +61,59 @@ jobs:
           flutter pub get
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
-              test_path="test/views/$(basename ${file%.*})_test/$(basename ${file%.*})_test.dart"
+              component_name=$(basename ${file%.*})
+              test_path="test/views/${component_name}_test/${component_name}_test.dart"
               if [ -f "$test_path" ]; then
+                echo "Running Golden Test for $component_name (current)"
                 flutter test --update-goldens "$test_path"
               fi
             fi
           done
 
-      - name: Create PR Comment
+      - name: Generate comparison markdown
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## UI Changes Review
+        id: generate-markdown
+        run: |
+          echo "Generating comparison markdown..."
+          markdown=""
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == lib/views/* ]]; then
+              component_name=$(basename ${file%.*})
+              test_dir="test/views/${component_name}_test"
+              if [ -d "$test_dir" ]; then
+                markdown+="### ${component_name} の変更\\n\\n"
+                markdown+="| 変更前 | 変更後 |\\n"
+                markdown+="|--------|--------|\\n"
 
-            以下のファイルのUI変更がありました：
+                for img in $test_dir/goldens/ci/*.png; do
+                  base_img="$test_dir/failures/$(basename $img)"
+                  if [ -f "$base_img" ]; then
+                    markdown+="|![Before]($base_img)|![After]($img)|\\n"
+                  fi
+                done
+                markdown+="\\n"
+              fi
+            fi
+          done
+          echo "markdown<<EOF" >> $GITHUB_OUTPUT
+          echo "$markdown" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-            ${{ steps.changed-files.outputs.all_changed_files }}
+      - name: Update PR description
+        if: steps.changed-files.outputs.any_changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_body="## UI の変更確認
 
-            ### 変更内容の確認
+          以下のファイルのUI変更がありました：
 
-            ${{ join(steps.changed-files.outputs.all_changed_files, '
+          ${{ steps.changed-files.outputs.all_changed_files }}
 
-            #### ') }}の変更：
+          ## Golden Test の結果
 
-            | 変更前 | 変更後 |
-            |--------|--------|
-            |![Before](test/views/my_home_page_test/failures/my_app_default_masterImage.png)|![After](test/views/my_home_page_test/goldens/ci/my_app_default.png)|
+          ${{ steps.generate-markdown.outputs.markdown }}
 
-            変更内容を確認し、意図した通りの変更になっているかご確認ください。
+          変更内容を確認し、意図した通りの変更になっているかご確認ください。"
+
+          gh pr edit ${{ github.event.pull_request.number }} --body "$pr_body"
