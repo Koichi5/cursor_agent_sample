@@ -135,7 +135,6 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Update PR description
-        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
