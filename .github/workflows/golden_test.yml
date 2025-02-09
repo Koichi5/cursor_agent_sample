@@ -45,8 +45,7 @@ jobs:
             if [[ $file == lib/views/* ]]; then
               component_name=$(basename ${file%.*})
               test_dir="test/views/${component_name}_test"
-              golden_image="$test_dir/goldens/ci/my_app_default.png"
-              if [ ! -f "$golden_image" ]; then
+              if [ ! -d "$test_dir/goldens/ci" ]; then
                 has_new_views=true
                 echo "New view detected: $component_name"
                 break
@@ -65,14 +64,20 @@ jobs:
               component_name=$(basename ${file%.*})
               test_path="test/views/${component_name}_test/${component_name}_test.dart"
               test_dir="test/views/${component_name}_test"
-              golden_image="$test_dir/goldens/ci/my_app_default.png"
-              if [ ! -f "$golden_image" ] && [ -f "$test_path" ]; then
+              if [ ! -d "$test_dir/goldens/ci" ] && [ -f "$test_path" ]; then
                 echo "Initializing Golden Test for $component_name"
                 mkdir -p "$test_dir/goldens/ci"
                 mkdir -p "$test_dir/failures"
                 flutter test --update-goldens "$test_path"
-                cp "$test_dir/goldens/ci/my_app_default.png" "$test_dir/failures/my_app_default_masterImage.png"
-                cp "$test_dir/goldens/ci/my_app_default.png" "$test_dir/failures/my_app_default_testImage.png"
+                # Find the actual generated golden file
+                golden_file=$(find "$test_dir/goldens/ci" -type f -name "*.png" | head -n 1)
+                if [ -n "$golden_file" ]; then
+                  cp "$golden_file" "$test_dir/failures/my_app_default_masterImage.png"
+                  cp "$golden_file" "$test_dir/failures/my_app_default_testImage.png"
+                else
+                  echo "No golden file found for $component_name"
+                  exit 1
+                fi
               fi
             fi
           done
@@ -86,11 +91,19 @@ jobs:
             if [[ $file == lib/views/* ]]; then
               component_name=$(basename ${file%.*})
               test_path="test/views/${component_name}_test/${component_name}_test.dart"
+              test_dir="test/views/${component_name}_test"
               if [ -f "$test_path" ]; then
                 echo "Running Golden Test for $component_name (base)"
                 flutter test --update-goldens "$test_path"
-                mkdir -p "test/views/${component_name}_test/failures"
-                cp "test/views/${component_name}_test/goldens/ci/my_app_default.png" "test/views/${component_name}_test/failures/my_app_default_masterImage.png"
+                # Find the actual generated golden file
+                golden_file=$(find "$test_dir/goldens/ci" -type f -name "*.png" | head -n 1)
+                if [ -n "$golden_file" ]; then
+                  mkdir -p "$test_dir/failures"
+                  cp "$golden_file" "$test_dir/failures/my_app_default_masterImage.png"
+                else
+                  echo "No golden file found for $component_name"
+                  exit 1
+                fi
               fi
             fi
           done
@@ -104,11 +117,19 @@ jobs:
             if [[ $file == lib/views/* ]]; then
               component_name=$(basename ${file%.*})
               test_path="test/views/${component_name}_test/${component_name}_test.dart"
+              test_dir="test/views/${component_name}_test"
               if [ -f "$test_path" ]; then
                 echo "Running Golden Test for $component_name (test)"
                 flutter test --update-goldens "$test_path"
-                mkdir -p "test/views/${component_name}_test/failures"
-                cp "test/views/${component_name}_test/goldens/ci/my_app_default.png" "test/views/${component_name}_test/failures/my_app_default_testImage.png"
+                # Find the actual generated golden file
+                golden_file=$(find "$test_dir/goldens/ci" -type f -name "*.png" | head -n 1)
+                if [ -n "$golden_file" ]; then
+                  mkdir -p "$test_dir/failures"
+                  cp "$golden_file" "$test_dir/failures/my_app_default_testImage.png"
+                else
+                  echo "No golden file found for $component_name"
+                  exit 1
+                fi
               fi
             fi
           done
