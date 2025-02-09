@@ -82,10 +82,25 @@ jobs:
               test_dir="test/views/${component_name}_test"
               master_image="$test_dir/failures/my_app_default_masterImage.png"
               test_image="$test_dir/failures/my_app_default_testImage.png"
+              echo "Checking images for $component_name:"
+              echo "Master image: $master_image"
+              echo "Test image: $test_image"
               if [ -f "$master_image" ] && [ -f "$test_image" ]; then
+                echo "Both images exist"
                 if ! cmp -s "$master_image" "$test_image"; then
+                  echo "Images are different"
                   has_changes=true
                   break
+                else
+                  echo "Images are identical"
+                fi
+              else
+                echo "One or both images are missing"
+                if [ ! -f "$master_image" ]; then
+                  echo "Master image is missing"
+                fi
+                if [ ! -f "$test_image" ]; then
+                  echo "Test image is missing"
                 fi
               fi
             fi
