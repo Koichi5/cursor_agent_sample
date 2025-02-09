@@ -36,17 +36,14 @@ jobs:
           files: |
             lib/views/**/*.dart
 
-      - name: Clean workspace
-        if: steps.changed-files.outputs.any_changed == 'true'
-        run: |
-          rm -rf test/views/*/failures
-          rm -rf test/views/*/goldens/ci
-
       - name: Create base images
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
-          git checkout ${{ github.base_ref }}
+          mkdir -p base_branch
+          git worktree add base_branch ${{ github.base_ref }}
+          cd base_branch
           flutter pub get
+
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
               component_name=$(basename ${file%.*})
@@ -54,21 +51,17 @@ jobs:
               if [ -f "$test_path" ]; then
                 echo "Running Golden Test for $component_name (base)"
                 flutter test --update-goldens "$test_path"
-                mkdir -p "test/views/${component_name}_test/failures"
-                cp "test/views/${component_name}_test/goldens/ci/my_app_default.png" "test/views/${component_name}_test/failures/my_app_default_masterImage.png"
+                mkdir -p "../test/views/${component_name}_test/failures"
+                cp "test/views/${component_name}_test/goldens/ci/my_app_default.png" "../test/views/${component_name}_test/failures/my_app_default_masterImage.png"
               fi
             fi
           done
-
-      - name: Clean workspace for test images
-        if: steps.changed-files.outputs.any_changed == 'true'
-        run: |
-          rm -rf test/views/*/goldens/ci
+          cd ..
+          git worktree remove base_branch
 
       - name: Create test images
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
-          git checkout ${{ github.head_ref }}
           flutter pub get
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
@@ -87,7 +80,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add test/views/*/failures/*.png test/views/*/goldens/ci/*.png
+          git add test/views/*/failures/*.png
           git commit -m "test: Update Golden Test images [skip ci]" || true
           git push origin ${{ github.head_ref }} || true
 
