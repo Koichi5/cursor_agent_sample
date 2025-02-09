@@ -57,7 +57,7 @@ jobs:
             fi
           done
           cd ..
-          git worktree remove base_branch
+          git worktree remove --force base_branch
 
       - name: Create test images
         if: steps.changed-files.outputs.any_changed == 'true'
