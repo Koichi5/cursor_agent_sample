@@ -71,8 +71,30 @@ jobs:
             fi
           done
 
-      - name: Commit and push images
+      - name: Check for UI changes
         if: steps.changed-files.outputs.any_changed == 'true'
+        id: check-ui-changes
+        run: |
+          has_changes=false
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == lib/views/* ]]; then
+              component_name=$(basename ${file%.*})
+              test_dir="test/views/${component_name}_test"
+              master_image="$test_dir/failures/my_app_default_masterImage.png"
+              test_image="$test_dir/failures/my_app_default_testImage.png"
+              if [ -f "$master_image" ] && [ -f "$test_image" ]; then
+                if ! cmp -s "$master_image" "$test_image"; then
+                  has_changes=true
+                  break
+                fi
+              fi
+            fi
+          done
+          echo "has_ui_changes=$has_changes" >> $GITHUB_OUTPUT
+          echo "UI changes detected: $has_changes"
+
+      - name: Commit and push images
+        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -84,11 +106,11 @@ jobs:
           git push -f origin ${{ github.head_ref }}
 
       - name: Wait for images to be available
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes == 'true'
         run: sleep 10
 
       - name: Generate comparison markdown
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes == 'true'
         id: generate-markdown
         run: |
           echo "Generating comparison markdown..."
@@ -113,7 +135,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Update PR description
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -131,3 +153,8 @@ jobs:
           問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。"
 
           gh pr edit ${{ github.event.pull_request.number }} --body "$pr_body"
+
+      - name: No UI changes detected
+        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes != 'true'
+        run: |
+          echo "No UI changes were detected in the Golden Test images."
