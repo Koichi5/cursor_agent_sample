@@ -71,12 +71,6 @@ jobs:
             fi
           done
 
-      - name: Clean untracked files
-        if: steps.changed-files.outputs.any_changed == 'true'
-        run: |
-          git clean -fd
-          git checkout -- .
-
       - name: Commit and push images
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
@@ -85,7 +79,9 @@ jobs:
           git add test/views/*/failures/*.png test/views/*/goldens/ci/*.png pubspec.lock
           git status
           git commit -m "test: Update Golden Test images and dependencies [skip ci]"
-          git push origin HEAD:${{ github.head_ref }} --force
+          git fetch origin ${{ github.head_ref }}
+          git rebase origin/${{ github.head_ref }}
+          git push -f origin ${{ github.head_ref }}
 
       - name: Wait for images to be available
         if: steps.changed-files.outputs.any_changed == 'true'
