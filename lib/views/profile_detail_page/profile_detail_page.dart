@@ -53,34 +53,36 @@ class ProfileDetailPage extends StatelessWidget {
                   child: Stack(
                     children: [
                       Positioned(
-                        top: -50,
-                        right: -50,
+                        top: -30,
+                        right: -30,
                         child: Container(
-                          width: 200,
-                          height: 200,
+                          width: 180,
+                          height: 180,
                           decoration: BoxDecoration(
                             gradient: RadialGradient(
                               colors: [
-                                theme.colorScheme.primary.withOpacity(0.2),
+                                theme.colorScheme.primary.withOpacity(0.3),
                                 Colors.transparent,
                               ],
+                              stops: const [0.2, 1.0],
                             ),
                             shape: BoxShape.circle,
                           ),
                         ),
                       ),
                       Positioned(
-                        top: 100,
-                        left: -100,
+                        top: 80,
+                        left: -80,
                         child: Container(
-                          width: 300,
-                          height: 300,
+                          width: 250,
+                          height: 250,
                           decoration: BoxDecoration(
                             gradient: RadialGradient(
                               colors: [
-                                theme.colorScheme.tertiary.withOpacity(0.1),
+                                theme.colorScheme.tertiary.withOpacity(0.2),
                                 Colors.transparent,
                               ],
+                              stops: const [0.2, 1.0],
                             ),
                             shape: BoxShape.circle,
                           ),
