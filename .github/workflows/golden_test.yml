@@ -1,4 +1,3 @@
-Golden Test GitHub Actions
 name: Flutter Golden Tests
 
 on:
