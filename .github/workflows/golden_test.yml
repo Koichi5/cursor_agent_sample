@@ -137,8 +137,9 @@ jobs:
         id: generate-markdown
         run: |
           echo "Generating comparison markdown..."
-          # Use the new commit SHA for image URLs
-          repo_url="https://raw.githubusercontent.com/${{ github.repository }}/${{ steps.commit-images.outputs.new_sha }}"
+          # Use base SHA for Before images and new commit SHA for After images
+          base_url="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.event.pull_request.base.sha }}"
+          head_url="https://raw.githubusercontent.com/${{ github.repository }}/${{ steps.commit-images.outputs.new_sha }}"
 
           # Create a JSON array for tables
           echo "[" > tables.json
@@ -154,7 +155,7 @@ jobs:
                 else
                   echo "," >> tables.json
                 fi
-                echo "{\"Component\":\"${component_name}\",\"Before\":\"![Before](${repo_url}/$test_dir/failures/my_app_default_masterImage.png?raw=true)\",\"After\":\"![After](${repo_url}/$test_dir/failures/my_app_default_testImage.png?raw=true)\"}" >> tables.json
+                echo "{\"Component\":\"${component_name}\",\"Before\":\"![Before](${base_url}/$test_dir/failures/my_app_default_masterImage.png?raw=true)\",\"After\":\"![After](${head_url}/$test_dir/failures/my_app_default_testImage.png?raw=true)\"}" >> tables.json
               fi
             fi
           done
