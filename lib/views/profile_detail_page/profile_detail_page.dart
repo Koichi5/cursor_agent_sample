@@ -147,7 +147,7 @@ class ProfileDetailPage extends StatelessWidget {
                                 radius: 64,
                                 backgroundColor: Colors.transparent,
                                 child: Text(
-                                  'JD',
+                                  'BS',
                                   style:
                                       theme.textTheme.displayMedium?.copyWith(
                                     color: theme.colorScheme.onPrimary,
@@ -177,7 +177,7 @@ class ProfileDetailPage extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            'John Doe',
+                            'Bob Smith',
                             style: theme.textTheme.headlineLarge?.copyWith(
                               fontWeight: FontWeight.w900,
                               letterSpacing: -0.5,
