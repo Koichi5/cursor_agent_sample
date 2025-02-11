@@ -279,7 +279,14 @@ class ProfileDetailPage extends StatelessWidget {
             vertical: 12,
           ),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                theme.colorScheme.surface,
+                theme.colorScheme.surfaceVariant.withOpacity(0.5),
+              ],
+            ),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
@@ -296,16 +303,29 @@ class ProfileDetailPage extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Icon(
-                icon,
-                color: theme.colorScheme.primary,
-                size: 24,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primary.withOpacity(0.2),
+                      theme.colorScheme.tertiary.withOpacity(0.2),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  color: theme.colorScheme.primary,
+                  size: 24,
+                ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               Text(
                 label,
                 style: theme.textTheme.labelSmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -330,7 +350,12 @@ class ProfileDetailPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withOpacity(0.1),
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary.withOpacity(0.2),
+                    theme.colorScheme.tertiary.withOpacity(0.2),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -340,12 +365,35 @@ class ProfileDetailPage extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Text(
-              title,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.5,
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 6,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary,
+                    theme.colorScheme.tertiary,
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.primary.withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                    spreadRadius: -2,
+                  ),
+                ],
+              ),
+              child: Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.colorScheme.onPrimary,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
           ],
@@ -355,7 +403,14 @@ class ProfileDetailPage extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                theme.colorScheme.surface,
+                theme.colorScheme.surfaceVariant.withOpacity(0.5),
+              ],
+            ),
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
