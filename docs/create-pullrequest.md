@@ -2,31 +2,42 @@
 description: Pull Request作成手順
 globs:
 ---
-## pull request作成手順
-まず、このファイルを参照したら、「Pull Request作成手順のファイルを確認しました！」と報告してください。
+
+## pull request 作成手順
+
+まず、このファイルを参照したら、「Pull Request 作成手順のファイルを確認しました！」と報告してください。
 
 ### 差分の確認
-- {{マージ先ブランチ}}に関する指定がない場合は、どのブランチに対してPullRequestを作成するか必ず聞き返してください。
+
+- {{マージ先ブランチ}}に関する指定がない場合は、どのブランチに対して PullRequest を作成するか必ず聞き返してください。
 - `git diff origin/{{マージ先ブランチ}}...HEAD | cat` でマージ先ブランチとの差分を確認
 
 ### Pull Request 作成とブラウザでの表示
-- 以下のコマンドでpull requestを作成し、自動的にブラウザで開く
-- PRタイトルおよびPRテンプレートはマージ先との差分をもとに適切な内容にする
-- 指示がない限りDraftでpull requestを作成
-- `{{PRテンプレートを1行に変換}}`の部分はPRテンプレートの内容を`\n`で改行表現した1行の文字列
+
+- 以下のコマンドで pull request を作成し、自動的にブラウザで開く
+- PR タイトルおよび PR テンプレートはマージ先との差分をもとに適切な内容にする
+- 指示がない限り Draft で pull request を作成
+- PR の本文は一時ファイルを使用して作成することを推奨
+
+  ```bash
+  # PR本文を一時ファイルに保存
+  cat > pr_body.txt << 'EOL'
+  {{PRテンプレートの内容}}
+  EOL
+
+  # PRの作成
+  git push origin HEAD && \
+  gh pr create --draft --title "{{PRタイトル}}" --body-file pr_body.txt && \
+  gh pr view --web
+  ```
+
 - 各セクションを明確に区分
 - 必要な情報を漏れなく記載
 
----
-git push origin HEAD && \
-echo -e "{{PRテンプレートを1行に変換}}" | \
-gh pr create --draft --title "{{PRタイトル}}" --body-file - && \
-gh pr view --web
----
-
 ### Golden Test の実行
-[golden-test.mdc](mdc:.cursor/rules/golden-test.mdc) をもとに、UIに変更があれば実行してください。
 
-#### PRテンプレート
+[golden-test.mdc](mdc:.cursor/rules/golden-test.mdc) をもとに、UI に変更があれば実行してください。
+
+#### PR テンプレート
 
 [pull-request-template.mdc](mdc:.cursor/rules/pull-request-template.mdc) からテンプレート内容を取得すること

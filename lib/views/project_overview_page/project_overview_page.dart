@@ -6,6 +6,7 @@ class ProjectOverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final tealBlue = const Color(0xFF00BCD4);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -22,26 +23,26 @@ class ProjectOverviewPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(24.0),
         children: [
-          _buildProjectInfoCard(context),
+          _buildProjectInfoCard(context, tealBlue),
           const SizedBox(height: 24),
-          _buildTimelineCard(context),
+          _buildTimelineCard(context, tealBlue),
           const SizedBox(height: 24),
-          _buildTeamMembersCard(context),
+          _buildTeamMembersCard(context, tealBlue),
           const SizedBox(height: 24),
-          _buildMilestonesCard(context),
+          _buildMilestonesCard(context, tealBlue),
         ],
       ),
     );
   }
 
-  Widget _buildProjectInfoCard(BuildContext context) {
+  Widget _buildProjectInfoCard(BuildContext context, Color baseColor) {
     final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: BorderSide(
-          color: theme.colorScheme.outline.withOpacity(0.1),
+          color: baseColor.withOpacity(0.2),
         ),
       ),
       child: Padding(
@@ -54,12 +55,12 @@ class ProjectOverviewPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    color: baseColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.rocket_launch_rounded,
-                    color: theme.colorScheme.primary,
+                    color: baseColor,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -76,7 +77,7 @@ class ProjectOverviewPage extends StatelessWidget {
                       Text(
                         '進行中 - 60% 完了',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.primary,
+                          color: baseColor,
                         ),
                       ),
                     ],
@@ -179,14 +180,14 @@ class ProjectOverviewPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTimelineCard(BuildContext context) {
+  Widget _buildTimelineCard(BuildContext context, Color baseColor) {
     final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: BorderSide(
-          color: theme.colorScheme.outline.withOpacity(0.1),
+          color: baseColor.withOpacity(0.2),
         ),
       ),
       child: Padding(
@@ -199,12 +200,12 @@ class ProjectOverviewPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    color: baseColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.timeline_rounded,
-                    color: theme.colorScheme.primary,
+                    color: baseColor,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -335,14 +336,14 @@ class ProjectOverviewPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTeamMembersCard(BuildContext context) {
+  Widget _buildTeamMembersCard(BuildContext context, Color baseColor) {
     final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: BorderSide(
-          color: theme.colorScheme.outline.withOpacity(0.1),
+          color: baseColor.withOpacity(0.2),
         ),
       ),
       child: Padding(
@@ -355,12 +356,12 @@ class ProjectOverviewPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    color: baseColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.group_rounded,
-                    color: theme.colorScheme.primary,
+                    color: baseColor,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -450,14 +451,14 @@ class ProjectOverviewPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMilestonesCard(BuildContext context) {
+  Widget _buildMilestonesCard(BuildContext context, Color baseColor) {
     final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: BorderSide(
-          color: theme.colorScheme.outline.withOpacity(0.1),
+          color: baseColor.withOpacity(0.2),
         ),
       ),
       child: Padding(
@@ -470,12 +471,12 @@ class ProjectOverviewPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    color: baseColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.flag_rounded,
-                    color: theme.colorScheme.primary,
+                    color: baseColor,
                   ),
                 ),
                 const SizedBox(width: 16),
