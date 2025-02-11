@@ -220,8 +220,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          pr_body=$(cat << 'EOF'
-## UI の変更確認
+          pr_body="## UI の変更確認
 
 以下のファイルのUI変更がありました：
 
@@ -231,9 +230,8 @@ ${{ steps.changed-files.outputs.all_changed_files }}
 
 ${{ steps.generate-markdown.outputs.markdown }}
 変更内容を確認し、意図した通りの変更になっているかご確認ください。
-問題がなければ、`flutter test --update-goldens --tags=golden` を実行してGolden Imageを更新してください。
-EOF
-)
+問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。"
+
           gh pr edit ${{ github.event.pull_request.number }} --body "$pr_body"
 
       - name: No UI changes detected
