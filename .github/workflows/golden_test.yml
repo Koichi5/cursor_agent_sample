@@ -231,11 +231,25 @@ jobs:
       - name: Update PR description
         if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && (steps.check-image-differences.outputs.has_image_differences == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         env:
-          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          description="## UI の変更確認\n\n以下のコンポーネントのUI変更がありました：\n\n${{ steps.generate-markdown.outputs.changed_components }}\n## Golden Test の結果\n\n${{ steps.create_table.outputs.table }}\n\n変更内容を確認し、意図した通りの変更になっているかご確認ください。\n問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。"
-          echo -e "$description" > pr_description.txt
-          gh pr edit ${{ github.event.pull_request.number }} --body "$(cat pr_description.txt)"
+          # Get existing PR description
+          existing_description=$(gh pr view ${{ github.event.pull_request.number }} --json body -q .body)
+
+          # Generate new content
+          new_content="## UI の変更確認\n\n以下のコンポーネントのUI変更がありました：\n\n${{ steps.generate-markdown.outputs.changed_components }}\n## Golden Test の結果\n\n${{ steps.create_table.outputs.table }}\n\n変更内容を確認し、意図した通りの変更になっているかご確認ください。\n問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。"
+
+          # Update PR description while preserving any existing content before the UI changes section
+          if [[ $existing_description == *"## UI の変更確認"* ]]; then
+            # Replace existing UI changes section
+            updated_description="${existing_description%%## UI の変更確認*}${new_content}"
+          else
+            # Append new content
+            updated_description="${existing_description}\n\n${new_content}"
+          fi
+
+          echo -e "$updated_description" > pr_description.txt
+          gh pr edit ${{ github.event.pull_request.number }} --body-file pr_description.txt
 
       - name: Clean up temporary files
         if: always()
