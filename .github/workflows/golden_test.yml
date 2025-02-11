@@ -203,11 +203,10 @@ jobs:
               if [ -d "$test_dir" ]; then
                 markdown="${markdown}### ${component_name} の変更
 
-| 変更前 | 変更後 |
-|--------|--------|
-|![Before](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_masterImage.png?raw=true)|![After](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_testImage.png?raw=true)|
-
-"
+                | 変更前 | 変更後 |
+                |--------|--------|
+                |![Before](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_masterImage.png?raw=true)|![After](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_testImage.png?raw=true)|
+                "
               fi
             fi
           done
