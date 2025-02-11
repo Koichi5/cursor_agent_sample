@@ -4,10 +4,11 @@ import 'package:cursor_agent_sample/views/data_visualization_page/data_visualiza
 class ProjectOverviewPage extends StatelessWidget {
   const ProjectOverviewPage({super.key});
 
+  static const tealBlue = Color(0xFF00BCD4);
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tealBlue = const Color(0xFF00BCD4);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -24,28 +25,28 @@ class ProjectOverviewPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(24.0),
         children: [
-          _buildProjectInfoCard(context, tealBlue),
+          _buildProjectInfoCard(context),
           const SizedBox(height: 24),
-          _buildTimelineCard(context, tealBlue),
+          _buildTimelineCard(context),
           const SizedBox(height: 24),
-          _buildTeamMembersCard(context, tealBlue),
+          _buildTeamMembersCard(context),
           const SizedBox(height: 24),
-          _buildMilestonesCard(context, tealBlue),
+          _buildMilestonesCard(context),
           const SizedBox(height: 24),
-          _buildDataVisualizationCard(context, tealBlue),
+          _buildDataVisualizationCard(context),
         ],
       ),
     );
   }
 
-  Widget _buildProjectInfoCard(BuildContext context, Color baseColor) {
+  Widget _buildProjectInfoCard(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: BorderSide(
-          color: baseColor.withOpacity(0.2),
+          color: tealBlue.withOpacity(0.2),
         ),
       ),
       child: Padding(
@@ -58,12 +59,12 @@ class ProjectOverviewPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: baseColor.withOpacity(0.1),
+                    color: tealBlue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.rocket_launch_rounded,
-                    color: baseColor,
+                    color: tealBlue,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -80,7 +81,7 @@ class ProjectOverviewPage extends StatelessWidget {
                       Text(
                         '進行中 - 60% 完了',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: baseColor,
+                          color: tealBlue,
                         ),
                       ),
                     ],
@@ -164,7 +165,7 @@ class ProjectOverviewPage extends StatelessWidget {
       children: [
         Icon(
           icon,
-          color: theme.colorScheme.primary,
+          color: tealBlue,
         ),
         const SizedBox(height: 8),
         Text(
@@ -183,14 +184,14 @@ class ProjectOverviewPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTimelineCard(BuildContext context, Color baseColor) {
+  Widget _buildTimelineCard(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: BorderSide(
-          color: baseColor.withOpacity(0.2),
+          color: tealBlue.withOpacity(0.2),
         ),
       ),
       child: Padding(
@@ -203,12 +204,12 @@ class ProjectOverviewPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: baseColor.withOpacity(0.1),
+                    color: tealBlue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.timeline_rounded,
-                    color: baseColor,
+                    color: tealBlue,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -263,14 +264,11 @@ class ProjectOverviewPage extends StatelessWidget {
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
-                  color: isCompleted
-                      ? theme.colorScheme.primary
-                      : theme.colorScheme.surfaceVariant,
+                  color:
+                      isCompleted ? tealBlue : theme.colorScheme.surfaceVariant,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isCompleted
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.outline,
+                    color: isCompleted ? tealBlue : theme.colorScheme.outline,
                     width: 2,
                   ),
                 ),
@@ -287,7 +285,7 @@ class ProjectOverviewPage extends StatelessWidget {
                   child: Container(
                     width: 2,
                     color: isCompleted
-                        ? theme.colorScheme.primary
+                        ? tealBlue
                         : theme.colorScheme.outline.withOpacity(0.2),
                   ),
                 ),
@@ -316,7 +314,7 @@ class ProjectOverviewPage extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: isCompleted
-                          ? theme.colorScheme.primary.withOpacity(0.1)
+                          ? tealBlue.withOpacity(0.1)
                           : theme.colorScheme.surfaceVariant,
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -324,7 +322,7 @@ class ProjectOverviewPage extends StatelessWidget {
                       date,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: isCompleted
-                            ? theme.colorScheme.primary
+                            ? tealBlue
                             : theme.colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w500,
                       ),
@@ -339,14 +337,14 @@ class ProjectOverviewPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTeamMembersCard(BuildContext context, Color baseColor) {
+  Widget _buildTeamMembersCard(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: BorderSide(
-          color: baseColor.withOpacity(0.2),
+          color: tealBlue.withOpacity(0.2),
         ),
       ),
       child: Padding(
@@ -359,12 +357,12 @@ class ProjectOverviewPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: baseColor.withOpacity(0.1),
+                    color: tealBlue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.group_rounded,
-                    color: baseColor,
+                    color: tealBlue,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -416,7 +414,7 @@ class ProjectOverviewPage extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 24,
-            backgroundColor: theme.colorScheme.primary,
+            backgroundColor: tealBlue,
             child: Text(
               initials,
               style: theme.textTheme.titleMedium?.copyWith(
@@ -454,14 +452,14 @@ class ProjectOverviewPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMilestonesCard(BuildContext context, Color baseColor) {
+  Widget _buildMilestonesCard(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: BorderSide(
-          color: baseColor.withOpacity(0.2),
+          color: tealBlue.withOpacity(0.2),
         ),
       ),
       child: Padding(
@@ -474,12 +472,12 @@ class ProjectOverviewPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: baseColor.withOpacity(0.1),
+                    color: tealBlue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.flag_rounded,
-                    color: baseColor,
+                    color: tealBlue,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -552,7 +550,7 @@ class ProjectOverviewPage extends StatelessWidget {
             value: progress,
             backgroundColor: theme.colorScheme.surfaceVariant,
             valueColor: AlwaysStoppedAnimation<Color>(
-              theme.colorScheme.primary,
+              tealBlue,
             ),
             minHeight: 8,
           ),
@@ -561,7 +559,7 @@ class ProjectOverviewPage extends StatelessWidget {
         Text(
           '${(progress * 100).toInt()}% 完了',
           style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.primary,
+            color: tealBlue,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -569,14 +567,14 @@ class ProjectOverviewPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDataVisualizationCard(BuildContext context, Color baseColor) {
+  Widget _buildDataVisualizationCard(BuildContext context) {
     final theme = Theme.of(context);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
         side: BorderSide(
-          color: baseColor.withOpacity(0.2),
+          color: tealBlue.withOpacity(0.2),
         ),
       ),
       child: InkWell(
@@ -596,12 +594,12 @@ class ProjectOverviewPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: baseColor.withOpacity(0.1),
+                  color: tealBlue.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   Icons.insert_chart_rounded,
-                  color: baseColor,
+                  color: tealBlue,
                 ),
               ),
               const SizedBox(width: 16),

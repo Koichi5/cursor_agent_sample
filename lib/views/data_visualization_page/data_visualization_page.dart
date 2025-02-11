@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class DataVisualizationPage extends StatelessWidget {
   const DataVisualizationPage({super.key});
 
+  static const tealBlue = Color(0xFF00BCD4);
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -52,12 +54,12 @@ class DataVisualizationPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withOpacity(0.1),
+                    color: tealBlue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.trending_up_rounded,
-                    color: theme.colorScheme.primary,
+                    color: tealBlue,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -81,7 +83,7 @@ class DataVisualizationPage extends StatelessWidget {
                 child: CustomPaint(
                   painter: _ProgressChartPainter(
                     values: const [0.3, 0.5, 0.4, 0.7, 0.6, 0.8, 0.9],
-                    color: theme.colorScheme.primary,
+                    color: tealBlue,
                   ),
                 ),
               ),
@@ -149,7 +151,7 @@ class DataVisualizationPage extends StatelessWidget {
                 painter: _PieChartPainter(
                   values: const [0.4, 0.3, 0.2, 0.1],
                   colors: [
-                    theme.colorScheme.primary,
+                    tealBlue,
                     theme.colorScheme.secondary,
                     theme.colorScheme.tertiary,
                     theme.colorScheme.error,
@@ -161,7 +163,7 @@ class DataVisualizationPage extends StatelessWidget {
             _buildLegend(
               context,
               '機能開発',
-              theme.colorScheme.primary,
+              tealBlue,
               '40%',
             ),
             const SizedBox(height: 8),
@@ -219,7 +221,7 @@ class DataVisualizationPage extends StatelessWidget {
         Text(
           value,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.primary,
+            color: tealBlue,
             fontWeight: FontWeight.bold,
           ),
         ),
