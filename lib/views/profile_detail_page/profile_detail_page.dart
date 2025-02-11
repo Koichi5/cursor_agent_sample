@@ -30,9 +30,10 @@ class ProfileDetailPage extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.black,
+                      Colors.black.withOpacity(0.8),
                       Colors.transparent,
                     ],
-                    stops: const [0.7, 1.0],
+                    stops: const [0.4, 0.7, 1.0],
                   ).createShader(rect);
                 },
                 blendMode: BlendMode.dstIn,
@@ -46,10 +47,45 @@ class ProfileDetailPage extends StatelessWidget {
                         theme.colorScheme.tertiary,
                         theme.colorScheme.secondary,
                       ],
+                      stops: const [0.2, 0.6, 1.0],
                     ),
                   ),
                   child: Stack(
                     children: [
+                      Positioned(
+                        top: -50,
+                        right: -50,
+                        child: Container(
+                          width: 200,
+                          height: 200,
+                          decoration: BoxDecoration(
+                            gradient: RadialGradient(
+                              colors: [
+                                theme.colorScheme.primary.withOpacity(0.2),
+                                Colors.transparent,
+                              ],
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 100,
+                        left: -100,
+                        child: Container(
+                          width: 300,
+                          height: 300,
+                          decoration: BoxDecoration(
+                            gradient: RadialGradient(
+                              colors: [
+                                theme.colorScheme.tertiary.withOpacity(0.1),
+                                Colors.transparent,
+                              ],
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
                       Positioned.fill(
                         child: Container(
                           decoration: BoxDecoration(
@@ -75,15 +111,16 @@ class ProfileDetailPage extends StatelessWidget {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                theme.colorScheme.primary.withOpacity(0.2),
-                                theme.colorScheme.tertiary.withOpacity(0.2),
+                                theme.colorScheme.primary.withOpacity(0.3),
+                                theme.colorScheme.tertiary.withOpacity(0.3),
                               ],
+                              stops: const [0.3, 1.0],
                             ),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
                                 color:
-                                    theme.colorScheme.shadow.withOpacity(0.2),
+                                    theme.colorScheme.primary.withOpacity(0.2),
                                 blurRadius: 32,
                                 offset: const Offset(0, 12),
                                 spreadRadius: -8,
@@ -92,15 +129,29 @@ class ProfileDetailPage extends StatelessWidget {
                           ),
                           child: Hero(
                             tag: 'profile-avatar',
-                            child: CircleAvatar(
-                              radius: 64,
-                              backgroundColor:
-                                  theme.colorScheme.primaryContainer,
-                              child: Text(
-                                'JD',
-                                style: theme.textTheme.displayMedium?.copyWith(
-                                  color: theme.colorScheme.onPrimaryContainer,
-                                  fontWeight: FontWeight.w900,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    theme.colorScheme.primaryContainer,
+                                    theme.colorScheme.primary,
+                                  ],
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: CircleAvatar(
+                                radius: 64,
+                                backgroundColor: Colors.transparent,
+                                child: Text(
+                                  'JD',
+                                  style:
+                                      theme.textTheme.displayMedium?.copyWith(
+                                    color: theme.colorScheme.onPrimary,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: -1,
+                                  ),
                                 ),
                               ),
                             ),
