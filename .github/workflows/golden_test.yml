@@ -41,107 +41,44 @@ jobs:
         id: check-new-views
         run: |
           has_new_views=false
-          new_view_files=""
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
               component_name=$(basename ${file%.*})
               test_dir="test/views/${component_name}_test"
-              if [ ! -d "$test_dir" ]; then
+              if [ ! -d "$test_dir/goldens/ci" ]; then
                 has_new_views=true
-                if [ -n "$new_view_files" ]; then
-                  new_view_files="$new_view_files,"
-                fi
-                new_view_files="$new_view_files$file"
                 echo "New view detected: $component_name"
+                break
               fi
             fi
           done
           echo "has_new_views=$has_new_views" >> $GITHUB_OUTPUT
-          echo "new_view_files=$new_view_files" >> $GITHUB_OUTPUT
-
-      - name: Create Golden Test files for new views
-        if: steps.check-new-views.outputs.has_new_views == 'true'
-        run: |
-          IFS=',' read -ra view_files <<< "${{ steps.check-new-views.outputs.new_view_files }}"
-          for file in "${view_files[@]}"; do
-            component_name=$(basename ${file%.*})
-            test_dir="test/views/${component_name}_test"
-            test_file="$test_dir/${component_name}_test.dart"
-
-            # Create test directory
-            mkdir -p "$test_dir"
-
-            # Create test file from template
-            cat > "$test_file" << EOL
-              import 'package:alchemist/alchemist.dart';
-              import 'package:cursor_agent_sample/views/$component_name/$component_name.dart';
-              import 'package:flutter/material.dart';
-              import 'package:flutter_test/flutter_test.dart';
-
-              import '../../support/alchemist/golden_test_device_scenario.dart';
-
-              @Tags(['golden'])
-              void main() {
-                group('${component_name} Golden Test', () {
-                  Widget buildMyApp() {
-                    return MaterialApp(
-                      theme: ThemeData(
-                        useMaterial3: true,
-                        colorScheme: ColorScheme.fromSeed(
-                          seedColor: Colors.deepPurple,
-                          brightness: Brightness.light,
-                        ),
-                      ),
-                      home: const ${component_name}(),
-                    );
-                  }
-
-                  final phonePortrait = Device.phonePortrait;
-
-                  goldenTest(
-                    'Default',
-                    fileName: '${component_name}_default',
-                    builder: () {
-                      return GoldenTestGroup(
-                        columns: 1,
-                        children: [
-                          GoldenTestDeviceScenario(
-                            name: phonePortrait.name,
-                            device: phonePortrait,
-                            builder: () => buildMyApp(),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                });
-              }
-            EOL
-            echo "Created Golden Test file for $component_name"
-          done
 
       - name: Initialize Golden images for new views
-        if: steps.check-new-views.outputs.has_new_views == 'true'
+        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-new-views.outputs.has_new_views == 'true'
         run: |
-          IFS=',' read -ra view_files <<< "${{ steps.check-new-views.outputs.new_view_files }}"
-          for file in "${view_files[@]}"; do
-            component_name=$(basename ${file%.*})
-            test_path="test/views/${component_name}_test/${component_name}_test.dart"
-            test_dir="test/views/${component_name}_test"
-
-            echo "Initializing Golden Test for $component_name"
-            mkdir -p "$test_dir/goldens/ci"
-            mkdir -p "$test_dir/failures"
-            flutter test --update-goldens "$test_path"
-
-            # Find the actual generated golden file
-            golden_file=$(find "$test_dir/goldens/ci" -type f -name "*.png" | head -n 1)
-            if [ -n "$golden_file" ]; then
-              cp "$golden_file" "$test_dir/failures/my_app_default_masterImage.png"
-              cp "$golden_file" "$test_dir/failures/my_app_default_testImage.png"
-            else
-              echo "No golden file found for $component_name"
-              exit 1
+          git checkout -f ${{ github.head_ref }}
+          flutter pub get
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == lib/views/* ]]; then
+              component_name=$(basename ${file%.*})
+              test_path="test/views/${component_name}_test/${component_name}_test.dart"
+              test_dir="test/views/${component_name}_test"
+              if [ ! -d "$test_dir/goldens/ci" ] && [ -f "$test_path" ]; then
+                echo "Initializing Golden Test for $component_name"
+                mkdir -p "$test_dir/goldens/ci"
+                mkdir -p "$test_dir/failures"
+                flutter test --update-goldens "$test_path"
+                # Find the actual generated golden file
+                golden_file=$(find "$test_dir/goldens/ci" -type f -name "*.png" | head -n 1)
+                if [ -n "$golden_file" ]; then
+                  cp "$golden_file" "$test_dir/failures/my_app_default_masterImage.png"
+                  cp "$golden_file" "$test_dir/failures/my_app_default_testImage.png"
+                else
+                  echo "No golden file found for $component_name"
+                  exit 1
+                fi
+              fi
             fi
           done
 
