@@ -74,7 +74,7 @@ jobs:
             mkdir -p "$test_dir"
 
             # Create test file from template without indentation
-            cat > "$test_file" << 'EOL'
+            cat > "$test_file" << EOL
               import 'package:alchemist/alchemist.dart';
               import 'package:cursor_agent_sample/views/$component_name/$component_name.dart';
               import 'package:flutter/material.dart';
