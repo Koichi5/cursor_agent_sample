@@ -38,16 +38,114 @@ jobs:
           base_sha: ${{ github.event.pull_request.base.sha }}
           sha: ${{ github.event.pull_request.head.sha }}
 
-      - name: Check for UI changes
-        id: check-ui-changes
+      - name: Check for new views
+        if: steps.changed-files.outputs.any_changed == 'true'
+        id: check-new-views
         run: |
-          if [[ "${{ steps.changed-files.outputs.any_changed }}" != "true" ]]; then
-            echo "No UI changes detected in views directory. Skipping Golden Tests."
-            echo "has_ui_changes=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          echo "UI changes detected. Proceeding with Golden Tests."
-          echo "has_ui_changes=true" >> $GITHUB_OUTPUT
+          has_new_views=false
+          new_view_files=""
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == lib/views/* ]]; then
+              component_name=$(basename ${file%.*})
+              test_dir="test/views/${component_name}_test"
+              if [ ! -d "$test_dir" ]; then
+                has_new_views=true
+                if [ -n "$new_view_files" ]; then
+                  new_view_files="$new_view_files,"
+                fi
+                new_view_files="$new_view_files$file"
+                echo "New view detected: $component_name"
+              fi
+            fi
+          done
+          echo "has_new_views=$has_new_views" >> $GITHUB_OUTPUT
+          echo "new_view_files=$new_view_files" >> $GITHUB_OUTPUT
+
+      - name: Create Golden Test files for new views
+        if: steps.check-new-views.outputs.has_new_views == 'true'
+        run: |
+          IFS=',' read -ra view_files <<< "${{ steps.check-new-views.outputs.new_view_files }}"
+          for file in "${view_files[@]}"; do
+            component_name=$(basename ${file%.*})
+            test_dir="test/views/${component_name}_test"
+            test_file="$test_dir/${component_name}_test.dart"
+
+            # Create test directory
+            mkdir -p "$test_dir"
+
+            # Create test file from template
+            cat > "$test_file" << EOL
+              import 'package:alchemist/alchemist.dart';
+              import 'package:cursor_agent_sample/views/$component_name/$component_name.dart';
+              import 'package:flutter/material.dart';
+              import 'package:flutter_test/flutter_test.dart';
+
+              import '../../support/alchemist/golden_test_device_scenario.dart';
+
+              @Tags(['golden'])
+              void main() {
+                group('${component_name} Golden Test', () {
+                  Widget buildMyApp() {
+                    return MaterialApp(
+                      theme: ThemeData(
+                        useMaterial3: true,
+                        colorScheme: ColorScheme.fromSeed(
+                          seedColor: Colors.deepPurple,
+                          brightness: Brightness.light,
+                        ),
+                      ),
+                      home: const ${component_name}(),
+                    );
+                  }
+
+                  final phonePortrait = Device.phonePortrait;
+
+                  goldenTest(
+                    'Default',
+                    fileName: '${component_name}_default',
+                    builder: () {
+                      return GoldenTestGroup(
+                        columns: 1,
+                        children: [
+                          GoldenTestDeviceScenario(
+                            name: phonePortrait.name,
+                            device: phonePortrait,
+                            builder: () => buildMyApp(),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                });
+              }
+            EOL
+            echo "Created Golden Test file for $component_name"
+          done
+
+      - name: Initialize Golden images for new views
+        if: steps.check-new-views.outputs.has_new_views == 'true'
+        run: |
+          IFS=',' read -ra view_files <<< "${{ steps.check-new-views.outputs.new_view_files }}"
+          for file in "${view_files[@]}"; do
+            component_name=$(basename ${file%.*})
+            test_path="test/views/${component_name}_test/${component_name}_test.dart"
+            test_dir="test/views/${component_name}_test"
+
+            echo "Initializing Golden Test for $component_name"
+            mkdir -p "$test_dir/goldens/ci"
+            mkdir -p "$test_dir/failures"
+            flutter test --update-goldens "$test_path"
+
+            # Find the actual generated golden file
+            golden_file=$(find "$test_dir/goldens/ci" -type f -name "*.png" | head -n 1)
+            if [ -n "$golden_file" ]; then
+              cp "$golden_file" "$test_dir/failures/my_app_default_masterImage.png"
+              cp "$golden_file" "$test_dir/failures/my_app_default_testImage.png"
+            else
+              echo "No golden file found for $component_name"
+              exit 1
+            fi
+          done
 
       - name: Create base images
         if: steps.check-ui-changes.outputs.has_ui_changes == 'true'
@@ -184,25 +282,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Get existing PR description
-          existing_description=$(gh pr view ${{ github.event.pull_request.number }} --json body -q .body)
+          pr_body="# UI の変更確認
+          以下のファイルのUI変更がありました：
+          ${{ steps.changed-files.outputs.all_changed_files }}
+          ${{ steps.generate-markdown.outputs.markdown }}
 
-          # Generate new content for UI changes section
-          new_ui_section="## UI の変更確認\n\n以下のコンポーネントのUI変更がありました：\n\n${{ steps.generate-markdown.outputs.changed_components }}\n## Golden Test の結果\n\n${{ steps.create_table.outputs.table }}\n\n変更内容を確認し、意図した通りの変更になっているかご確認ください。\n問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。"
+          変更内容を確認し、意図した通りの変更になっているかご確認ください。
+          問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。"
 
-          # Update PR description
-          if [[ $existing_description == *"## UI の変更確認"* ]]; then
-            # Replace existing UI changes section
-            updated_description="${existing_description%%## UI の変更確認*}${new_ui_section}"
-          else
-            # Append new content
-            updated_description="${existing_description}\n\n${new_ui_section}"
-          fi
+          gh pr edit ${{ github.event.pull_request.number }} --body "$pr_body"
 
-          echo -e "$updated_description" > pr_description.txt
-          gh pr edit ${{ github.event.pull_request.number }} --body-file pr_description.txt
-
-      - name: Clean up temporary files
-        if: always()
+      - name: No UI changes detected
+        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes != 'true' && steps.check-new-views.outputs.has_new_views != 'true'
         run: |
           rm -f pr_description.txt tables.json || true
