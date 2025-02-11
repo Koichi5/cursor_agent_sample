@@ -211,16 +211,18 @@ jobs:
               fi
             fi
           done
-          echo "markdown<<EOF" >> $GITHUB_OUTPUT
-          echo "$markdown" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          cat << EOF > markdown.txt
+$markdown
+EOF
+          echo "markdown=$(cat markdown.txt)" >> $GITHUB_OUTPUT
 
       - name: Update PR description
         if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          pr_body="## UI の変更確認
+          cat << EOF > pr_body.txt
+## UI の変更確認
 
 以下のファイルのUI変更がありました：
 
@@ -229,10 +231,12 @@ ${{ steps.changed-files.outputs.all_changed_files }}
 ## Golden Test の結果
 
 ${{ steps.generate-markdown.outputs.markdown }}
-変更内容を確認し、意図した通りの変更になっているかご確認ください。
-問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。"
 
-          gh pr edit ${{ github.event.pull_request.number }} --body "$pr_body"
+変更内容を確認し、意図した通りの変更になっているかご確認ください。
+問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。
+EOF
+
+          gh pr edit ${{ github.event.pull_request.number }} --body "$(cat pr_body.txt)"
 
       - name: No UI changes detected
         if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes != 'true' && steps.check-new-views.outputs.has_new_views != 'true'
