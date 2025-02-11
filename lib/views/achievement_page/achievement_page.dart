@@ -9,7 +9,7 @@ class AchievementPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '実績',
+          'Achievement',
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w900,
             letterSpacing: -0.5,
@@ -32,20 +32,20 @@ class AchievementPage extends StatelessWidget {
                   const SizedBox(height: 32),
                   _buildCategorySection(
                     context,
-                    title: 'プロジェクト実績',
+                    title: 'Project Achievement',
                     icon: Icons.rocket_launch_rounded,
                     achievements: [
                       _Achievement(
-                        title: 'プロジェクトマスター',
-                        description: '50個のプロジェクトを完了',
+                        title: 'Project Master',
+                        description: '50 projects completed',
                         progress: 0.48,
                         currentValue: '24',
                         targetValue: '50',
                         icon: Icons.task_alt_rounded,
                       ),
                       _Achievement(
-                        title: 'コントリビューター',
-                        description: '200個のリポジトリに貢献',
+                        title: 'Contributor',
+                        description: 'Contributed to 200 repositories',
                         progress: 0.78,
                         currentValue: '156',
                         targetValue: '200',
@@ -56,20 +56,20 @@ class AchievementPage extends StatelessWidget {
                   const SizedBox(height: 24),
                   _buildCategorySection(
                     context,
-                    title: 'スキル実績',
+                    title: 'Skill Achievement',
                     icon: Icons.code_rounded,
                     achievements: [
                       _Achievement(
-                        title: 'Flutter エキスパート',
-                        description: '100個のFlutterウィジェットを作成',
+                        title: 'Flutter Expert',
+                        description: 'Created 100 Flutter widgets',
                         progress: 0.85,
                         currentValue: '85',
                         targetValue: '100',
                         icon: Icons.widgets_rounded,
                       ),
                       _Achievement(
-                        title: 'UI マスター',
-                        description: '50個のカスタムアニメーションを実装',
+                        title: 'UI Master',
+                        description: 'Implemented 50 custom animations',
                         progress: 0.64,
                         currentValue: '32',
                         targetValue: '50',
@@ -152,7 +152,7 @@ class AchievementPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '総合達成度',
+                  'Overall Achievement',
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w900,
                     letterSpacing: -0.5,
@@ -160,7 +160,7 @@ class AchievementPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '全36個の実績のうち26個を達成しました！',
+                  'Achieved 26 out of 36 achievements!',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                     height: 1.6,
