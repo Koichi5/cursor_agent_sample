@@ -237,10 +237,16 @@ jobs:
           echo -e "$description" > pr_description.txt
           gh pr edit ${{ github.event.pull_request.number }} --body "$(cat pr_description.txt)"
 
+      - name: Clean up temporary files
+        if: always()
+        run: |
+          rm -f pr_description.txt tables.json || true
+
       - name: Commit and push images
         if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && (steps.check-image-differences.outputs.has_image_differences == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
+          # Check for actual changes in test images
+          if git status --porcelain | grep -q "test/views/.*\\.png\|pubspec.lock"; then
             git config --local user.email "github-actions[bot]@users.noreply.github.com"
             git config --local user.name "github-actions[bot]"
             git add test/views/*/failures/*.png test/views/*/goldens/ci/*.png pubspec.lock
@@ -249,7 +255,7 @@ jobs:
             git rebase origin/${{ github.head_ref }}
             git push -f origin ${{ github.head_ref }}
           else
-            echo "No changes to commit"
+            echo "No changes to commit in test images or dependencies"
           fi
 
       - name: No UI changes detected
