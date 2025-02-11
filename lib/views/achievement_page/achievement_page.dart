@@ -95,21 +95,21 @@ class AchievementPage extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            theme.colorScheme.primary.withOpacity(0.15),
-            theme.colorScheme.tertiary.withOpacity(0.15),
+            Colors.blue.withOpacity(0.2),
+            Colors.lightBlue.withOpacity(0.15),
           ],
         ),
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.1),
+            color: Colors.blue.withOpacity(0.1),
             blurRadius: 24,
             offset: const Offset(0, 8),
             spreadRadius: -8,
           ),
         ],
         border: Border.all(
-          color: theme.colorScheme.primary.withOpacity(0.2),
+          color: Colors.blue.withOpacity(0.2),
           width: 1.5,
         ),
       ),
@@ -129,7 +129,7 @@ class AchievementPage extends StatelessWidget {
                     value: value,
                     backgroundColor: theme.colorScheme.surfaceVariant,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      theme.colorScheme.primary,
+                      Colors.blue,
                     ),
                     strokeWidth: 12,
                   ),
@@ -191,15 +191,15 @@ class AchievementPage extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    theme.colorScheme.primary.withOpacity(0.2),
-                    theme.colorScheme.tertiary.withOpacity(0.2),
+                    Colors.blue.withOpacity(0.2),
+                    Colors.lightBlue.withOpacity(0.2),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
                 icon,
-                color: theme.colorScheme.primary,
+                color: Colors.blue,
                 size: 24,
               ),
             ),
@@ -232,20 +232,20 @@ class AchievementPage extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             theme.colorScheme.surface,
-            theme.colorScheme.surfaceVariant.withOpacity(0.5),
+            Colors.blue.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.08),
+            color: Colors.blue.withOpacity(0.08),
             blurRadius: 24,
             offset: const Offset(0, 8),
             spreadRadius: -8,
           ),
         ],
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.1),
+          color: Colors.blue.withOpacity(0.1),
           width: 1,
         ),
       ),
@@ -258,15 +258,15 @@ class AchievementPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      theme.colorScheme.primary.withOpacity(0.2),
-                      theme.colorScheme.tertiary.withOpacity(0.2),
+                      Colors.blue.withOpacity(0.2),
+                      Colors.lightBlue.withOpacity(0.2),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(
                   achievement.icon,
-                  color: theme.colorScheme.primary,
+                  color: Colors.blue,
                   size: 24,
                 ),
               ),
@@ -312,8 +312,8 @@ class AchievementPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        theme.colorScheme.primary,
-                        theme.colorScheme.tertiary,
+                        Colors.blue,
+                        Colors.lightBlue,
                       ],
                     ),
                     borderRadius: BorderRadius.circular(4),
@@ -337,7 +337,7 @@ class AchievementPage extends StatelessWidget {
               Text(
                 '(${(achievement.progress * 100).toInt()}%)',
                 style: theme.textTheme.titleSmall?.copyWith(
-                  color: theme.colorScheme.primary,
+                  color: Colors.blue,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.5,
                 ),
