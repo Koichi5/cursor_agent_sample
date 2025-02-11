@@ -441,22 +441,22 @@ class ProfileDetailPage extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            theme.colorScheme.primary.withOpacity(0.1),
-            theme.colorScheme.tertiary.withOpacity(0.05),
+            theme.colorScheme.primary.withOpacity(0.15),
+            theme.colorScheme.tertiary.withOpacity(0.08),
           ],
-          stops: const [0.3, 1.0],
+          stops: const [0.2, 1.0],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.1),
-            blurRadius: 20,
+            color: theme.colorScheme.primary.withOpacity(0.1),
+            blurRadius: 24,
             offset: const Offset(0, 8),
-            spreadRadius: -4,
+            spreadRadius: -8,
           ),
         ],
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.1),
+          color: theme.colorScheme.primary.withOpacity(0.2),
           width: 1,
         ),
       ),
@@ -469,8 +469,8 @@ class ProfileDetailPage extends StatelessWidget {
               Text(
                 label,
                 style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.3,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.4,
                 ),
               ),
               Container(
@@ -491,7 +491,7 @@ class ProfileDetailPage extends StatelessWidget {
                   boxShadow: [
                     BoxShadow(
                       color: theme.colorScheme.primary.withOpacity(0.3),
-                      blurRadius: 12,
+                      blurRadius: 16,
                       offset: const Offset(0, 4),
                       spreadRadius: -4,
                     ),
@@ -501,7 +501,8 @@ class ProfileDetailPage extends StatelessWidget {
                   '${(level * 100).toInt()}%',
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
                   ),
                 ),
               ),
@@ -514,8 +515,8 @@ class ProfileDetailPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
               gradient: LinearGradient(
                 colors: [
-                  theme.colorScheme.primaryContainer.withOpacity(0.3),
-                  theme.colorScheme.tertiaryContainer.withOpacity(0.3),
+                  theme.colorScheme.primaryContainer.withOpacity(0.4),
+                  theme.colorScheme.tertiaryContainer.withOpacity(0.4),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -524,16 +525,35 @@ class ProfileDetailPage extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(6),
               child: TweenAnimationBuilder<double>(
-                duration: const Duration(milliseconds: 800),
+                duration: const Duration(milliseconds: 1200),
                 curve: Curves.easeOutCubic,
                 tween: Tween<double>(begin: 0, end: level),
-                builder: (context, value, _) => LinearProgressIndicator(
-                  value: value,
-                  backgroundColor: Colors.transparent,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    theme.colorScheme.primary,
-                  ),
-                  minHeight: 8,
+                builder: (context, value, _) => Stack(
+                  children: [
+                    LinearProgressIndicator(
+                      value: value,
+                      backgroundColor: Colors.transparent,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        theme.colorScheme.primary,
+                      ),
+                      minHeight: 8,
+                    ),
+                    Positioned.fill(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              theme.colorScheme.primary,
+                              theme.colorScheme.tertiary,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                        child: const SizedBox.expand(),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
