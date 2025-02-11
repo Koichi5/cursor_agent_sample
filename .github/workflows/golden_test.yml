@@ -209,13 +209,7 @@ jobs:
                 else
                   echo "," >> tables.json
                 fi
-                cat << EOF >> tables.json
-                {
-                  "Component": "${component_name}",
-                  "Before": "![Before](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_masterImage.png?raw=true)",
-                  "After": "![After](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_testImage.png?raw=true)"
-                }
-EOF
+                echo "{\"Component\":\"${component_name}\",\"Before\":\"![Before](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_masterImage.png?raw=true)\",\"After\":\"![After](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_testImage.png?raw=true)\"}" >> tables.json
               fi
             fi
           done
