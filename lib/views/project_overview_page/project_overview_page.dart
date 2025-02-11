@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cursor_agent_sample/views/data_visualization_page/data_visualization_page.dart';
 
 class ProjectOverviewPage extends StatelessWidget {
   const ProjectOverviewPage({super.key});
@@ -30,6 +31,8 @@ class ProjectOverviewPage extends StatelessWidget {
           _buildTeamMembersCard(context, tealBlue),
           const SizedBox(height: 24),
           _buildMilestonesCard(context, tealBlue),
+          const SizedBox(height: 24),
+          _buildDataVisualizationCard(context, tealBlue),
         ],
       ),
     );
@@ -563,6 +566,72 @@ class ProjectOverviewPage extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildDataVisualizationCard(BuildContext context, Color baseColor) {
+    final theme = Theme.of(context);
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(
+          color: baseColor.withOpacity(0.2),
+        ),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const DataVisualizationPage(),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(24),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: baseColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.insert_chart_rounded,
+                  color: baseColor,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'データ可視化',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'プロジェクトの進捗状況やチーム貢献度を可視化',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
