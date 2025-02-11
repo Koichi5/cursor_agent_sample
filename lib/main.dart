@@ -3,6 +3,7 @@ import 'package:cursor_agent_sample/views/my_home_page/my_home_page.dart';
 import 'package:cursor_agent_sample/views/profile_page/profile_page.dart';
 import 'package:cursor_agent_sample/views/settings_page/settings_page.dart';
 import 'package:cursor_agent_sample/views/notification_page/notification_page.dart';
+import 'package:cursor_agent_sample/views/analytics_page/analytics_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -46,6 +47,35 @@ class _RootPageState extends State<RootPage> {
     const NotificationPage(title: '通知'),
     const ProfilePage(title: 'プロフィール'),
     const SettingsPage(title: '設定'),
+    const AnalyticsPage(),
+  ];
+
+  final List<NavigationDestination> _destinations = [
+    const NavigationDestination(
+      icon: Icon(Icons.home_outlined),
+      selectedIcon: Icon(Icons.home),
+      label: 'Home',
+    ),
+    const NavigationDestination(
+      icon: Icon(Icons.notifications_none_rounded),
+      selectedIcon: Icon(Icons.notifications_rounded),
+      label: '通知',
+    ),
+    const NavigationDestination(
+      icon: Icon(Icons.person_outline_rounded),
+      selectedIcon: Icon(Icons.person_rounded),
+      label: 'プロフィール',
+    ),
+    const NavigationDestination(
+      icon: Icon(Icons.settings_outlined),
+      selectedIcon: Icon(Icons.settings_rounded),
+      label: '設定',
+    ),
+    const NavigationDestination(
+      icon: Icon(Icons.analytics_outlined),
+      selectedIcon: Icon(Icons.analytics),
+      label: 'Analytics',
+    ),
   ];
 
   @override
@@ -60,52 +90,7 @@ class _RootPageState extends State<RootPage> {
             _selectedIndex = index;
           });
         },
-        destinations: [
-          NavigationDestination(
-            icon: Icon(
-              Icons.home_outlined,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            selectedIcon: Icon(
-              Icons.home_rounded,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
-            label: 'ホーム',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.notifications_none_rounded,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            selectedIcon: Icon(
-              Icons.notifications_rounded,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
-            label: '通知',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.person_outline_rounded,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            selectedIcon: Icon(
-              Icons.person_rounded,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
-            label: 'プロフィール',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.settings_outlined,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-            selectedIcon: Icon(
-              Icons.settings_rounded,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
-            label: '設定',
-          ),
-        ],
+        destinations: _destinations,
       ),
     );
   }
