@@ -122,19 +122,23 @@ jobs:
 
       - name: Commit and push images
         if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && steps.check-image-differences.outputs.has_image_differences == 'true'
+        id: commit-images
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add test/views/*/failures/*.png
           git commit -m "test: Update Golden Test images [skip ci]" || echo "No changes to commit"
           git push origin HEAD:${{ github.head_ref }} || echo "No changes to push"
+          # Store the new commit SHA
+          echo "new_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
       - name: Generate comparison markdown
         if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && steps.check-image-differences.outputs.has_image_differences == 'true'
         id: generate-markdown
         run: |
           echo "Generating comparison markdown..."
-          repo_url="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.event.pull_request.head.sha }}"
+          # Use the new commit SHA for image URLs
+          repo_url="https://raw.githubusercontent.com/${{ github.repository }}/${{ steps.commit-images.outputs.new_sha }}"
 
           # Create a JSON array for tables
           echo "[" > tables.json
