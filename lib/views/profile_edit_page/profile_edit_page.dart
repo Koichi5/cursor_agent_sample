@@ -34,49 +34,27 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.colorScheme.surface,
+        backgroundColor: Colors.transparent,
         title: Text(
           widget.title,
           style: TextStyle(
             color: theme.colorScheme.onSurface,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w900,
+            fontSize: 24,
+            letterSpacing: -0.5,
           ),
         ),
         centerTitle: true,
         elevation: 0,
-        actions: [
-          TextButton(
-            onPressed: () {
-              if (_formKey.currentState?.validate() ?? false) {
-                // Save profile
-                setState(() {
-                  _isEditing = false;
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('プロフィールを保存しました'),
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: theme.colorScheme.primary,
-                  ),
-                );
-              }
-            },
-            child: Text(
-              '保存',
-              style: TextStyle(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: const [0.0, 0.3, 0.6, 1.0],
             colors: [
+              theme.colorScheme.primary.withOpacity(0.05),
               theme.colorScheme.surface,
               theme.colorScheme.surface,
               theme.colorScheme.primaryContainer.withOpacity(0.1),
@@ -92,19 +70,35 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 child: Stack(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.primaryContainer,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            theme.colorScheme.primary,
+                            theme.colorScheme.primary.withOpacity(0.8),
+                          ],
+                        ),
                         shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: theme.colorScheme.primary.withOpacity(0.3),
+                            blurRadius: 24,
+                            offset: const Offset(0, 8),
+                            spreadRadius: -8,
+                          ),
+                        ],
                       ),
                       child: CircleAvatar(
-                        radius: 60,
-                        backgroundColor: theme.colorScheme.primary,
+                        radius: 64,
+                        backgroundColor: Colors.transparent,
                         child: Text(
                           'JD',
-                          style: theme.textTheme.displayMedium?.copyWith(
+                          style: theme.textTheme.displayLarge?.copyWith(
                             color: theme.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w900,
+                            height: 1,
                           ),
                         ),
                       ),
@@ -113,29 +107,33 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                       right: 0,
                       bottom: 0,
                       child: Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.primary,
+                          color: theme.colorScheme.primaryContainer,
                           shape: BoxShape.circle,
+                          border: Border.all(
+                            color: theme.colorScheme.surface,
+                            width: 3,
+                          ),
                           boxShadow: [
                             BoxShadow(
                               color: theme.colorScheme.shadow.withOpacity(0.2),
-                              blurRadius: 8,
+                              blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
                           ],
                         ),
                         child: Icon(
                           Icons.camera_alt_rounded,
-                          color: theme.colorScheme.onPrimary,
-                          size: 20,
+                          color: theme.colorScheme.onPrimaryContainer,
+                          size: 24,
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 40),
               _buildTextField(
                 context,
                 label: '名前',
@@ -162,6 +160,36 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                   return null;
                 },
               ),
+              const SizedBox(height: 40),
+              FilledButton(
+                onPressed: () {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    setState(() {
+                      _isEditing = false;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('プロフィールを保存しました'),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: theme.colorScheme.primary,
+                      ),
+                    );
+                  }
+                },
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: const Text(
+                  '保存する',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -181,7 +209,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: theme.colorScheme.shadow.withOpacity(0.08),
@@ -197,38 +225,51 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         validator: validator,
         style: theme.textTheme.bodyLarge?.copyWith(
           color: theme.colorScheme.onSurface,
+          height: 1.5,
         ),
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
-            color: theme.colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w500,
-          ),
-          prefixIcon: Icon(
-            prefixIcon,
             color: theme.colorScheme.primary,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
+          prefixIcon: Container(
+            margin: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primaryContainer.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              prefixIcon,
+              color: theme.colorScheme.primary,
+              size: 24,
+            ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide(
               color: theme.colorScheme.outline.withOpacity(0.1),
+              width: 2,
             ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide(
               color: theme.colorScheme.primary,
               width: 2,
             ),
           ),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide(
               color: theme.colorScheme.error,
+              width: 2,
             ),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide(
               color: theme.colorScheme.error,
               width: 2,
@@ -236,6 +277,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           ),
           filled: true,
           fillColor: theme.colorScheme.surface,
+          contentPadding: const EdgeInsets.all(20),
         ),
       ),
     );
