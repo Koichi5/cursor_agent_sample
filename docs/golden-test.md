@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 ---
 
 ## Golden Test とは

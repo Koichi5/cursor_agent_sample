@@ -1,6 +1,6 @@
 ---
 description: Pull Request作成手順
-globs: 
+globs:
 ---
 ## pull request作成手順
 まず、このファイルを参照したら、「Pull Request作成手順のファイルを確認しました！」と報告してください。
@@ -30,4 +30,3 @@ gh pr view --web
 #### PRテンプレート
 
 [pull-request-template.mdc](mdc:.cursor/rules/pull-request-template.mdc) からテンプレート内容を取得すること
-
