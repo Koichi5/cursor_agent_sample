@@ -9,13 +9,19 @@ class ProfileDetailPage extends StatelessWidget {
     final theme = Theme.of(context);
     return Scaffold(
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
-            expandedHeight: 280,
+            expandedHeight: 320,
             pinned: true,
+            stretch: true,
             backgroundColor: Colors.transparent,
             elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
+              stretchModes: const [
+                StretchMode.zoomBackground,
+                StretchMode.blurBackground,
+              ],
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -23,7 +29,7 @@ class ProfileDetailPage extends StatelessWidget {
                     end: Alignment.bottomRight,
                     colors: [
                       theme.colorScheme.primary,
-                      theme.colorScheme.primary.withOpacity(0.8),
+                      theme.colorScheme.tertiary,
                     ],
                   ),
                 ),
@@ -39,7 +45,7 @@ class ProfileDetailPage extends StatelessWidget {
                               Colors.transparent,
                               theme.colorScheme.surface,
                             ],
-                            stops: const [0.7, 1.0],
+                            stops: const [0.6, 1.0],
                           ),
                         ),
                       ),
@@ -50,17 +56,27 @@ class ProfileDetailPage extends StatelessWidget {
                         margin: const EdgeInsets.only(bottom: 24),
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.primaryContainer,
+                          color: theme.colorScheme.surface,
                           shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.colorScheme.shadow.withOpacity(0.2),
+                              blurRadius: 24,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
                         ),
-                        child: CircleAvatar(
-                          radius: 60,
-                          backgroundColor: theme.colorScheme.primary,
-                          child: Text(
-                            'JD',
-                            style: theme.textTheme.displayMedium?.copyWith(
-                              color: theme.colorScheme.onPrimary,
-                              fontWeight: FontWeight.w900,
+                        child: Hero(
+                          tag: 'profile-avatar',
+                          child: CircleAvatar(
+                            radius: 64,
+                            backgroundColor: theme.colorScheme.primaryContainer,
+                            child: Text(
+                              'JD',
+                              style: theme.textTheme.displayMedium?.copyWith(
+                                color: theme.colorScheme.onPrimaryContainer,
+                                fontWeight: FontWeight.w900,
+                              ),
                             ),
                           ),
                         ),
@@ -74,7 +90,7 @@ class ProfileDetailPage extends StatelessWidget {
           SliverList(
             delegate: SliverChildListDelegate([
               Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -83,38 +99,51 @@ class ProfileDetailPage extends StatelessWidget {
                         children: [
                           Text(
                             'John Doe',
-                            style: theme.textTheme.headlineMedium?.copyWith(
+                            style: theme.textTheme.headlineLarge?.copyWith(
                               fontWeight: FontWeight.w900,
                               letterSpacing: -0.5,
                             ),
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            'Flutter Developer',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.colorScheme.primary,
-                              fontWeight: FontWeight.w600,
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primaryContainer,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              'Flutter Developer',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: theme.colorScheme.onPrimaryContainer,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 24),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               _buildSocialButton(
                                 context,
                                 icon: Icons.language_rounded,
+                                label: 'Website',
                                 onTap: () {},
                               ),
                               const SizedBox(width: 16),
                               _buildSocialButton(
                                 context,
                                 icon: Icons.alternate_email_rounded,
+                                label: 'Email',
                                 onTap: () {},
                               ),
                               const SizedBox(width: 16),
                               _buildSocialButton(
                                 context,
                                 icon: Icons.chat_bubble_outline_rounded,
+                                label: 'Chat',
                                 onTap: () {},
                               ),
                             ],
@@ -142,14 +171,14 @@ class ProfileDetailPage extends StatelessWidget {
                       icon: Icons.code_rounded,
                       child: Wrap(
                         spacing: 8,
-                        runSpacing: 8,
+                        runSpacing: 12,
                         children: [
-                          _buildSkillChip(context, 'Flutter'),
-                          _buildSkillChip(context, 'Dart'),
-                          _buildSkillChip(context, 'Firebase'),
-                          _buildSkillChip(context, 'UI/UX'),
-                          _buildSkillChip(context, 'Git'),
-                          _buildSkillChip(context, 'AI'),
+                          _buildSkillChip(context, 'Flutter', 0.9),
+                          _buildSkillChip(context, 'Dart', 0.85),
+                          _buildSkillChip(context, 'Firebase', 0.8),
+                          _buildSkillChip(context, 'UI/UX', 0.75),
+                          _buildSkillChip(context, 'Git', 0.7),
+                          _buildSkillChip(context, 'AI', 0.65),
                         ],
                       ),
                     ),
@@ -165,6 +194,7 @@ class ProfileDetailPage extends StatelessWidget {
                             title: 'プロジェクト完了数',
                             value: '24',
                             subtitle: '個のプロジェクトを完了',
+                            icon: Icons.task_alt_rounded,
                           ),
                           const Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
@@ -175,10 +205,12 @@ class ProfileDetailPage extends StatelessWidget {
                             title: '貢献リポジトリ数',
                             value: '156',
                             subtitle: '個のリポジトリに貢献',
+                            icon: Icons.source_rounded,
                           ),
                         ],
                       ),
                     ),
+                    const SizedBox(height: 32),
                   ],
                 ),
               ),
@@ -192,6 +224,7 @@ class ProfileDetailPage extends StatelessWidget {
   Widget _buildSocialButton(
     BuildContext context, {
     required IconData icon,
+    required String label,
     required VoidCallback onTap,
   }) {
     final theme = Theme.of(context);
@@ -201,15 +234,41 @@ class ProfileDetailPage extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.primaryContainer.withOpacity(0.4),
-            borderRadius: BorderRadius.circular(16),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
           ),
-          child: Icon(
-            icon,
-            color: theme.colorScheme.primary,
-            size: 24,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: theme.colorScheme.shadow.withOpacity(0.08),
+                blurRadius: 24,
+                offset: const Offset(0, 8),
+                spreadRadius: -8,
+              ),
+            ],
+            border: Border.all(
+              color: theme.colorScheme.outline.withOpacity(0.1),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            children: [
+              Icon(
+                icon,
+                color: theme.colorScheme.primary,
+                size: 24,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -229,10 +288,10 @@ class ProfileDetailPage extends StatelessWidget {
         Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: theme.colorScheme.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 icon,
@@ -254,7 +313,7 @@ class ProfileDetailPage extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(24),
@@ -277,16 +336,14 @@ class ProfileDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSkillChip(BuildContext context, String label) {
+  Widget _buildSkillChip(BuildContext context, String label, double level) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
-      ),
+      width: 160,
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(12),
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: theme.colorScheme.shadow.withOpacity(0.08),
@@ -294,13 +351,34 @@ class ProfileDetailPage extends StatelessWidget {
             offset: const Offset(0, 2),
           ),
         ],
-      ),
-      child: Text(
-        label,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: theme.colorScheme.onPrimaryContainer,
-          fontWeight: FontWeight.w600,
+        border: Border.all(
+          color: theme.colorScheme.outline.withOpacity(0.1),
+          width: 1,
         ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: level,
+              backgroundColor:
+                  theme.colorScheme.primaryContainer.withOpacity(0.2),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                theme.colorScheme.primary,
+              ),
+              minHeight: 8,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -310,12 +388,26 @@ class ProfileDetailPage extends StatelessWidget {
     required String title,
     required String value,
     required String subtitle,
+    required IconData icon,
   }) {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(
+              icon,
+              color: theme.colorScheme.primary,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,13 +434,13 @@ class ProfileDetailPage extends StatelessWidget {
               vertical: 8,
             ),
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withOpacity(0.1),
+              color: theme.colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               value,
               style: theme.textTheme.titleLarge?.copyWith(
-                color: theme.colorScheme.primary,
+                color: theme.colorScheme.onPrimaryContainer,
                 fontWeight: FontWeight.w900,
               ),
             ),
