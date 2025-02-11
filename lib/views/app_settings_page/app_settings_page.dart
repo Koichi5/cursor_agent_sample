@@ -24,7 +24,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
           style: TextStyle(
             color: theme.colorScheme.onSurface,
             fontWeight: FontWeight.w900,
-            fontSize: 24,
+            fontSize: 28,
             letterSpacing: -0.5,
           ),
         ),
@@ -38,19 +38,20 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
             end: Alignment.bottomRight,
             stops: const [0.0, 0.3, 0.6, 1.0],
             colors: [
-              theme.colorScheme.primary.withOpacity(0.05),
+              theme.colorScheme.primary.withOpacity(0.08),
               theme.colorScheme.surface,
               theme.colorScheme.surface,
-              theme.colorScheme.primaryContainer.withOpacity(0.1),
+              theme.colorScheme.primaryContainer.withOpacity(0.15),
             ],
           ),
         ),
         child: ListView(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
           children: [
             _buildSection(
               context,
               title: '表示設定',
+              icon: Icons.palette_rounded,
               children: [
                 _buildSwitchTile(
                   context,
@@ -64,7 +65,10 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                     });
                   },
                 ),
-                const SizedBox(height: 8),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Divider(),
+                ),
                 _buildSliderTile(
                   context,
                   title: '文字サイズ',
@@ -86,6 +90,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
             _buildSection(
               context,
               title: '通知設定',
+              icon: Icons.notifications_active_rounded,
               children: [
                 _buildSwitchTile(
                   context,
@@ -105,6 +110,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
             _buildSection(
               context,
               title: 'その他',
+              icon: Icons.more_horiz_rounded,
               children: [
                 _buildActionTile(
                   context,
@@ -117,11 +123,17 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                         content: const Text('キャッシュを削除しました'),
                         behavior: SnackBarBehavior.floating,
                         backgroundColor: theme.colorScheme.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     );
                   },
                 ),
-                const SizedBox(height: 8),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Divider(),
+                ),
                 _buildActionTile(
                   context,
                   title: 'アプリについて',
@@ -129,19 +141,26 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                   icon: Icons.info_rounded,
                   trailing: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
+                      horizontal: 12,
+                      vertical: 6,
                     ),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.colorScheme.shadow.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Text(
                       'v1.0.0',
                       style: TextStyle(
                         color: theme.colorScheme.onPrimaryContainer,
                         fontWeight: FontWeight.w600,
-                        fontSize: 12,
+                        fontSize: 13,
                       ),
                     ),
                   ),
@@ -158,35 +177,45 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
   Widget _buildSection(
     BuildContext context, {
     required String title,
+    required IconData icon,
     required List<Widget> children,
   }) {
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          margin: const EdgeInsets.only(left: 4, bottom: 12),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 6,
-          ),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            title,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.primary,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-            ),
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 16),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  icon,
+                  color: theme.colorScheme.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
           ),
         ),
         Container(
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
                 color: theme.colorScheme.shadow.withOpacity(0.08),
@@ -195,6 +224,10 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
                 spreadRadius: -8,
               ),
             ],
+            border: Border.all(
+              color: theme.colorScheme.outline.withOpacity(0.1),
+              width: 1,
+            ),
           ),
           child: Column(
             children: children,
@@ -221,29 +254,41 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
         title: Text(
           title,
           style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.2,
           ),
         ),
         subtitle: Text(
           subtitle,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
+            height: 1.4,
           ),
         ),
         secondary: Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: theme.colorScheme.primaryContainer.withOpacity(0.4),
-            borderRadius: BorderRadius.circular(12),
+            color: value
+                ? theme.colorScheme.primary.withOpacity(0.15)
+                : theme.colorScheme.primaryContainer.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(14),
+            border: value
+                ? Border.all(
+                    color: theme.colorScheme.primary.withOpacity(0.3),
+                    width: 2,
+                  )
+                : null,
           ),
           child: Icon(
             icon,
-            color: theme.colorScheme.primary,
+            color: value
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurfaceVariant,
             size: 24,
           ),
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
         ),
       ),
     );
@@ -270,20 +315,22 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
             title: Text(
               title,
               style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
               ),
             ),
             subtitle: Text(
               subtitle,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
+                height: 1.4,
               ),
             ),
             leading: Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: theme.colorScheme.primaryContainer.withOpacity(0.4),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(
                 icon,
@@ -292,13 +339,58 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
               ),
             ),
           ),
-          Slider(
-            value: value,
-            min: min,
-            max: max,
-            divisions: divisions,
-            label: value.toStringAsFixed(1),
-            onChanged: onChanged,
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 24,
+              right: 24,
+              bottom: 16,
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '小',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        value.toStringAsFixed(1),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onPrimaryContainer,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '大',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+                Slider(
+                  value: value,
+                  min: min,
+                  max: max,
+                  divisions: divisions,
+                  label: value.toStringAsFixed(1),
+                  onChanged: onChanged,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -321,20 +413,22 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
         title: Text(
           title,
           style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.2,
           ),
         ),
         subtitle: Text(
           subtitle,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
+            height: 1.4,
           ),
         ),
         leading: Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: theme.colorScheme.primaryContainer.withOpacity(0.4),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
           ),
           child: Icon(
             icon,
@@ -344,7 +438,7 @@ class _AppSettingsPageState extends State<AppSettingsPage> {
         ),
         trailing: trailing,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
         ),
       ),
     );
