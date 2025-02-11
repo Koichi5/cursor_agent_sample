@@ -95,21 +95,21 @@ class AchievementPage extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.blue.withOpacity(0.2),
-            Colors.lightBlue.withOpacity(0.15),
+            Colors.amber.withOpacity(0.2),
+            Colors.orange.withOpacity(0.15),
           ],
         ),
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: Colors.blue.withOpacity(0.1),
+            color: Colors.orange.withOpacity(0.1),
             blurRadius: 24,
             offset: const Offset(0, 8),
             spreadRadius: -8,
           ),
         ],
         border: Border.all(
-          color: Colors.blue.withOpacity(0.2),
+          color: Colors.amber.withOpacity(0.2),
           width: 1.5,
         ),
       ),
@@ -129,7 +129,7 @@ class AchievementPage extends StatelessWidget {
                     value: value,
                     backgroundColor: theme.colorScheme.surfaceVariant,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      Colors.blue,
+                      Colors.orange,
                     ),
                     strokeWidth: 12,
                   ),
@@ -191,15 +191,15 @@ class AchievementPage extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.blue.withOpacity(0.2),
-                    Colors.lightBlue.withOpacity(0.2),
+                    Colors.amber.withOpacity(0.2),
+                    Colors.orange.withOpacity(0.2),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
                 icon,
-                color: Colors.blue,
+                color: Colors.orange,
                 size: 24,
               ),
             ),
@@ -232,20 +232,20 @@ class AchievementPage extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             theme.colorScheme.surface,
-            Colors.blue.withOpacity(0.05),
+            Colors.amber.withOpacity(0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.blue.withOpacity(0.08),
+            color: Colors.orange.withOpacity(0.08),
             blurRadius: 24,
             offset: const Offset(0, 8),
             spreadRadius: -8,
           ),
         ],
         border: Border.all(
-          color: Colors.blue.withOpacity(0.1),
+          color: Colors.orange.withOpacity(0.1),
           width: 1,
         ),
       ),
@@ -258,15 +258,15 @@ class AchievementPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.blue.withOpacity(0.2),
-                      Colors.lightBlue.withOpacity(0.2),
+                      Colors.amber.withOpacity(0.2),
+                      Colors.orange.withOpacity(0.2),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(
                   achievement.icon,
-                  color: Colors.blue,
+                  color: Colors.orange,
                   size: 24,
                 ),
               ),
@@ -312,8 +312,8 @@ class AchievementPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.blue,
-                        Colors.lightBlue,
+                        Colors.amber,
+                        Colors.orange,
                       ],
                     ),
                     borderRadius: BorderRadius.circular(4),
@@ -337,7 +337,7 @@ class AchievementPage extends StatelessWidget {
               Text(
                 '(${(achievement.progress * 100).toInt()}%)',
                 style: theme.textTheme.titleSmall?.copyWith(
-                  color: Colors.blue,
+                  color: Colors.orange,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.5,
                 ),
