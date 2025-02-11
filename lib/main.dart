@@ -4,6 +4,7 @@ import 'package:cursor_agent_sample/views/profile_page/profile_page.dart';
 import 'package:cursor_agent_sample/views/settings_page/settings_page.dart';
 import 'package:cursor_agent_sample/views/notification_page/notification_page.dart';
 import 'package:cursor_agent_sample/views/analytics_page/analytics_page.dart';
+import 'package:cursor_agent_sample/views/project_overview_page/project_overview_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,6 +45,7 @@ class _RootPageState extends State<RootPage> {
 
   final List<Widget> _pages = [
     const MyHomePage(title: 'Flutter Demo'),
+    const ProjectOverviewPage(),
     const NotificationPage(title: '通知'),
     const ProfilePage(title: 'プロフィール'),
     const SettingsPage(title: '設定'),
