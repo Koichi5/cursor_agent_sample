@@ -43,9 +43,9 @@ class ProfileDetailPage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        theme.colorScheme.primary.withOpacity(0.95),
-                        theme.colorScheme.tertiary.withOpacity(0.85),
-                        theme.colorScheme.secondary.withOpacity(0.75),
+                        theme.colorScheme.error,
+                        theme.colorScheme.errorContainer,
+                        theme.colorScheme.primary,
                       ],
                       stops: const [0.2, 0.5, 0.8],
                     ),
@@ -61,7 +61,7 @@ class ProfileDetailPage extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: RadialGradient(
                               colors: [
-                                theme.colorScheme.primary.withOpacity(0.5),
+                                theme.colorScheme.error.withOpacity(0.5),
                                 Colors.transparent,
                               ],
                               stops: const [0.1, 0.8],
@@ -79,7 +79,8 @@ class ProfileDetailPage extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: RadialGradient(
                               colors: [
-                                theme.colorScheme.tertiary.withOpacity(0.2),
+                                theme.colorScheme.errorContainer
+                                    .withOpacity(0.4),
                                 Colors.transparent,
                               ],
                               stops: const [0.2, 1.0],
@@ -137,15 +138,15 @@ class ProfileDetailPage extends StatelessWidget {
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                   colors: [
-                                    theme.colorScheme.primary,
-                                    theme.colorScheme.tertiary.withOpacity(0.9),
+                                    theme.colorScheme.error,
+                                    theme.colorScheme.errorContainer,
                                   ],
                                   stops: const [0.3, 0.9],
                                 ),
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: theme.colorScheme.primary
+                                    color: theme.colorScheme.error
                                         .withOpacity(0.4),
                                     blurRadius: 32,
                                     offset: const Offset(0, 12),
