@@ -43,28 +43,28 @@ class ProfileDetailPage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        theme.colorScheme.primary.withOpacity(0.9),
-                        theme.colorScheme.tertiary.withOpacity(0.8),
-                        theme.colorScheme.secondary.withOpacity(0.7),
+                        theme.colorScheme.primary.withOpacity(0.95),
+                        theme.colorScheme.tertiary.withOpacity(0.85),
+                        theme.colorScheme.secondary.withOpacity(0.75),
                       ],
-                      stops: const [0.3, 0.6, 0.9],
+                      stops: const [0.2, 0.5, 0.8],
                     ),
                   ),
                   child: Stack(
                     children: [
                       Positioned(
-                        top: -40,
-                        right: -40,
+                        top: -50,
+                        right: -50,
                         child: Container(
-                          width: 200,
-                          height: 200,
+                          width: 220,
+                          height: 220,
                           decoration: BoxDecoration(
                             gradient: RadialGradient(
                               colors: [
-                                theme.colorScheme.primary.withOpacity(0.4),
+                                theme.colorScheme.primary.withOpacity(0.5),
                                 Colors.transparent,
                               ],
-                              stops: const [0.1, 1.0],
+                              stops: const [0.1, 0.8],
                             ),
                             shape: BoxShape.circle,
                           ),
@@ -137,18 +137,19 @@ class ProfileDetailPage extends StatelessWidget {
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                   colors: [
-                                    theme.colorScheme.primary.withOpacity(0.9),
-                                    theme.colorScheme.tertiary.withOpacity(0.8),
+                                    theme.colorScheme.primary,
+                                    theme.colorScheme.tertiary.withOpacity(0.9),
                                   ],
+                                  stops: const [0.3, 0.9],
                                 ),
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
                                     color: theme.colorScheme.primary
-                                        .withOpacity(0.3),
-                                    blurRadius: 24,
-                                    offset: const Offset(0, 8),
-                                    spreadRadius: -4,
+                                        .withOpacity(0.4),
+                                    blurRadius: 32,
+                                    offset: const Offset(0, 12),
+                                    spreadRadius: -8,
                                   ),
                                 ],
                               ),
