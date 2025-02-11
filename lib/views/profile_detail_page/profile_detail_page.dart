@@ -382,13 +382,21 @@ class ProfileDetailPage extends StatelessWidget {
       width: 160,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            theme.colorScheme.surface,
+            theme.colorScheme.surfaceVariant.withOpacity(0.5),
+          ],
+        ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: theme.colorScheme.shadow.withOpacity(0.08),
             blurRadius: 16,
             offset: const Offset(0, 4),
+            spreadRadius: -4,
           ),
         ],
         border: Border.all(
@@ -414,13 +422,26 @@ class ProfileDetailPage extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer,
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primary,
+                      theme.colorScheme.tertiary,
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                      spreadRadius: -2,
+                    ),
+                  ],
                 ),
                 child: Text(
                   '${(level * 100).toInt()}%',
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: theme.colorScheme.onPrimaryContainer,
+                    color: theme.colorScheme.onPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -428,16 +449,26 @@ class ProfileDetailPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: LinearProgressIndicator(
-              value: level,
-              backgroundColor:
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              gradient: LinearGradient(
+                colors: [
                   theme.colorScheme.primaryContainer.withOpacity(0.2),
-              valueColor: AlwaysStoppedAnimation<Color>(
-                theme.colorScheme.primary,
+                  theme.colorScheme.tertiaryContainer.withOpacity(0.2),
+                ],
               ),
-              minHeight: 8,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: LinearProgressIndicator(
+                value: level,
+                backgroundColor: Colors.transparent,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  theme.colorScheme.primary,
+                ),
+                minHeight: 8,
+              ),
             ),
           ),
         ],
@@ -457,13 +488,21 @@ class ProfileDetailPage extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            theme.colorScheme.surface,
+            theme.colorScheme.surfaceVariant.withOpacity(0.5),
+          ],
+        ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
             color: theme.colorScheme.shadow.withOpacity(0.08),
             blurRadius: 16,
             offset: const Offset(0, 4),
+            spreadRadius: -4,
           ),
         ],
         border: Border.all(
@@ -481,8 +520,18 @@ class ProfileDetailPage extends StatelessWidget {
                   theme.colorScheme.primary.withOpacity(0.2),
                   theme.colorScheme.tertiary.withOpacity(0.2),
                 ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.colorScheme.primary.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                  spreadRadius: -2,
+                ),
+              ],
             ),
             child: Icon(
               icon,
@@ -522,6 +571,8 @@ class ProfileDetailPage extends StatelessWidget {
                   theme.colorScheme.primary,
                   theme.colorScheme.tertiary,
                 ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
@@ -529,6 +580,7 @@ class ProfileDetailPage extends StatelessWidget {
                   color: theme.colorScheme.primary.withOpacity(0.2),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
+                  spreadRadius: -2,
                 ),
               ],
             ),
