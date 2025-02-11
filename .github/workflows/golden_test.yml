@@ -192,27 +192,59 @@ jobs:
         id: generate-markdown
         run: |
           echo "Generating comparison markdown..."
-          markdown=""
           repo_url="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.head_ref }}"
           commit_sha=$(git rev-parse HEAD)
+
+          # Create a JSON array for tables
+          echo "[" > tables.json
+          first=true
 
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
               component_name=$(basename ${file%.*})
               test_dir="test/views/${component_name}_test"
               if [ -d "$test_dir" ]; then
-                markdown="$markdown### ${component_name} の変更\n\n| 変更前 | 変更後 |\n|--------|--------|\n|![Before](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_masterImage.png?raw=true)|![After](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_testImage.png?raw=true)|\n\n"
+                if [ "$first" = true ]; then
+                  first=false
+                else
+                  echo "," >> tables.json
+                fi
+                cat << EOF >> tables.json
+                {
+                  "Component": "${component_name}",
+                  "Before": "![Before](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_masterImage.png?raw=true)",
+                  "After": "![After](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_testImage.png?raw=true)"
+                }
+EOF
               fi
             fi
           done
-          echo "markdown=$markdown" >> $GITHUB_OUTPUT
+          echo "]" >> tables.json
+
+          # Store the component names for the description
+          changed_components=""
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == lib/views/* ]]; then
+              component_name=$(basename ${file%.*})
+              changed_components="$changed_components- $component_name\n"
+            fi
+          done
+          echo "changed_components=$changed_components" >> $GITHUB_OUTPUT
+
+      - name: Create comparison table
+        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
+        uses: gazab/create-markdown-table@v1
+        id: create_table
+        with:
+          file: ./tables.json
+          columns: '["Component", "Before", "After"]'
 
       - name: Update PR description
         if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          description="## UI の変更確認\n\n以下のファイルのUI変更がありました：\n\n${{ steps.changed-files.outputs.all_changed_files }}\n\n## Golden Test の結果\n\n${{ steps.generate-markdown.outputs.markdown }}\n変更内容を確認し、意図した通りの変更になっているかご確認ください。\n問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。"
+          description="## UI の変更確認\n\n以下のコンポーネントのUI変更がありました：\n\n${{ steps.generate-markdown.outputs.changed_components }}\n## Golden Test の結果\n\n${{ steps.create_table.outputs.table }}\n\n変更内容を確認し、意図した通りの変更になっているかご確認ください。\n問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。"
           echo -e "$description" > pr_description.txt
           gh pr edit ${{ github.event.pull_request.number }} --body "$(cat pr_description.txt)"
 
