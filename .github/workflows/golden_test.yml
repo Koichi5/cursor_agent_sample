@@ -140,9 +140,6 @@ jobs:
                 });
               }
             EOL
-
-            # Run Golden Test for new view
-            flutter test --update-goldens "$test_file"
           done
 
       # 新規ビューの変更をコミット
