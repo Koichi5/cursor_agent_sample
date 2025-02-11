@@ -51,21 +51,21 @@ class StatisticsPage extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            theme.colorScheme.primary.withOpacity(0.1),
-            theme.colorScheme.secondary.withOpacity(0.05),
+            const Color(0xFF00BCD4).withOpacity(0.2),
+            const Color(0xFF4DD0E1).withOpacity(0.1),
           ],
         ),
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.1),
+            color: const Color(0xFF00BCD4).withOpacity(0.1),
             blurRadius: 24,
             offset: const Offset(0, 8),
             spreadRadius: -8,
           ),
         ],
         border: Border.all(
-          color: theme.colorScheme.primary.withOpacity(0.1),
+          color: const Color(0xFF00BCD4).withOpacity(0.2),
           width: 1.5,
         ),
       ),
@@ -77,12 +77,12 @@ class StatisticsPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withOpacity(0.1),
+                  color: const Color(0xFF00BCD4).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(
                   Icons.trending_up_rounded,
-                  color: theme.colorScheme.primary,
+                  color: const Color(0xFF00BCD4),
                   size: 24,
                 ),
               ),
@@ -101,7 +101,7 @@ class StatisticsPage extends StatelessWidget {
                     Text(
                       '先週比 +23%',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.primary,
+                        color: const Color(0xFF00BCD4),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -149,8 +149,8 @@ class StatisticsPage extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  theme.colorScheme.primary,
-                  theme.colorScheme.secondary,
+                  const Color(0xFF00BCD4),
+                  const Color(0xFF4DD0E1),
                 ],
               ),
               borderRadius: BorderRadius.circular(12),
@@ -224,18 +224,25 @@ class StatisticsPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            theme.colorScheme.surface,
+            const Color(0xFFE0F7FA).withOpacity(0.5),
+          ],
+        ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.08),
+            color: const Color(0xFF00BCD4).withOpacity(0.08),
             blurRadius: 24,
             offset: const Offset(0, 8),
             spreadRadius: -8,
           ),
         ],
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.1),
+          color: const Color(0xFF00BCD4).withOpacity(0.2),
           width: 1,
         ),
       ),
@@ -245,12 +252,12 @@ class StatisticsPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withOpacity(0.1),
+              color: const Color(0xFF00BCD4).withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               icon,
-              color: theme.colorScheme.primary,
+              color: const Color(0xFF00BCD4),
               size: 20,
             ),
           ),
@@ -280,16 +287,16 @@ class StatisticsPage extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isPositive
-                      ? theme.colorScheme.primary.withOpacity(0.1)
-                      : theme.colorScheme.error.withOpacity(0.1),
+                      ? const Color(0xFF00BCD4).withOpacity(0.1)
+                      : const Color(0xFFB00020).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   trend,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: isPositive
-                        ? theme.colorScheme.primary
-                        : theme.colorScheme.error,
+                        ? const Color(0xFF00BCD4)
+                        : const Color(0xFFB00020),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -306,18 +313,25 @@ class StatisticsPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            theme.colorScheme.surface,
+            const Color(0xFFE0F7FA).withOpacity(0.3),
+          ],
+        ),
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.08),
+            color: const Color(0xFF00BCD4).withOpacity(0.08),
             blurRadius: 24,
             offset: const Offset(0, 8),
             spreadRadius: -8,
           ),
         ],
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.1),
+          color: const Color(0xFF00BCD4).withOpacity(0.2),
           width: 1,
         ),
       ),
@@ -329,12 +343,12 @@ class StatisticsPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withOpacity(0.1),
+                  color: const Color(0xFF00BCD4).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(
                   Icons.insert_chart_outlined_rounded,
-                  color: theme.colorScheme.primary,
+                  color: const Color(0xFF00BCD4),
                   size: 24,
                 ),
               ),
@@ -354,7 +368,7 @@ class StatisticsPage extends StatelessWidget {
             child: CustomPaint(
               painter: _TrendChartPainter(
                 values: const [0.3, 0.5, 0.4, 0.7, 0.6, 0.8, 0.9],
-                color: theme.colorScheme.primary,
+                color: const Color(0xFF00BCD4),
               ),
             ),
           ),
