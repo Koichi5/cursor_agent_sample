@@ -118,7 +118,7 @@ jobs:
                   );
                 });
               }
-              EOL
+            EOL
             echo "Created Golden Test file for $component_name"
           done
 
