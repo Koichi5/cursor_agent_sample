@@ -201,7 +201,7 @@ jobs:
               component_name=$(basename ${file%.*})
               test_dir="test/views/${component_name}_test"
               if [ -d "$test_dir" ]; then
-                markdown="${markdown}### ${component_name} の変更
+                markdown="$markdown### ${component_name} の変更
 
 | 変更前 | 変更後 |
 |--------|--------|
@@ -212,7 +212,7 @@ jobs:
             fi
           done
           echo "markdown<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$markdown" >> $GITHUB_OUTPUT
+          echo "$markdown" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Update PR description
@@ -220,7 +220,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          pr_body="## UI の変更確認
+          pr_body=$(cat << 'EOF'
+## UI の変更確認
 
 以下のファイルのUI変更がありました：
 
@@ -230,8 +231,9 @@ ${{ steps.changed-files.outputs.all_changed_files }}
 
 ${{ steps.generate-markdown.outputs.markdown }}
 変更内容を確認し、意図した通りの変更になっているかご確認ください。
-問題がなければ、\`flutter test --update-goldens --tags=golden\` を実行してGolden Imageを更新してください。"
-
+問題がなければ、`flutter test --update-goldens --tags=golden` を実行してGolden Imageを更新してください。
+EOF
+)
           gh pr edit ${{ github.event.pull_request.number }} --body "$pr_body"
 
       - name: No UI changes detected
