@@ -582,51 +582,56 @@ class ProfileDetailPage extends StatelessWidget {
             theme.colorScheme.surface,
             theme.colorScheme.surfaceVariant.withOpacity(0.5),
           ],
+          stops: const [0.3, 1.0],
         ),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-            spreadRadius: -4,
+            color: theme.colorScheme.shadow.withOpacity(0.1),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+            spreadRadius: -8,
           ),
         ],
         border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.1),
-          width: 1,
+          color: theme.colorScheme.primary.withOpacity(0.1),
+          width: 1.5,
         ),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   theme.colorScheme.primary.withOpacity(0.2),
-                  theme.colorScheme.tertiary.withOpacity(0.2),
+                  theme.colorScheme.tertiary.withOpacity(0.15),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: theme.colorScheme.primary.withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                  spreadRadius: -2,
+                  color: theme.colorScheme.primary.withOpacity(0.2),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                  spreadRadius: -4,
                 ),
               ],
+              border: Border.all(
+                color: theme.colorScheme.primary.withOpacity(0.2),
+                width: 1.5,
+              ),
             ),
             child: Icon(
               icon,
               color: theme.colorScheme.primary,
-              size: 24,
+              size: 28,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 20),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -634,14 +639,17 @@ class ProfileDetailPage extends StatelessWidget {
                 Text(
                   title,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.3,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Text(
                   subtitle,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
+                    height: 1.4,
+                    letterSpacing: 0.2,
                   ),
                 ),
               ],
@@ -649,8 +657,8 @@ class ProfileDetailPage extends StatelessWidget {
           ),
           Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
+              horizontal: 20,
+              vertical: 12,
             ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -660,22 +668,25 @@ class ProfileDetailPage extends StatelessWidget {
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
+                stops: const [0.3, 1.0],
               ),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: theme.colorScheme.primary.withOpacity(0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                  spreadRadius: -2,
+                  color: theme.colorScheme.primary.withOpacity(0.25),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                  spreadRadius: -4,
                 ),
               ],
             ),
             child: Text(
               value,
-              style: theme.textTheme.titleLarge?.copyWith(
+              style: theme.textTheme.headlineSmall?.copyWith(
                 color: theme.colorScheme.onPrimary,
                 fontWeight: FontWeight.w900,
+                letterSpacing: -0.5,
+                height: 1,
               ),
             ),
           ),
