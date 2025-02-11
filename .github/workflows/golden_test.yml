@@ -29,12 +29,14 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Get changed files
+      - name: Get changed files in this PR
         id: changed-files
         uses: tj-actions/changed-files@v42
         with:
           files: |
             lib/views/**/*.dart
+          base_sha: ${{ github.event.pull_request.base.sha }}
+          sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Check for new views
         if: steps.changed-files.outputs.any_changed == 'true'
@@ -146,9 +148,9 @@ jobs:
           done
 
       - name: Create base images
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true'
         run: |
-          git checkout -f ${{ github.base_ref }}
+          git checkout -f ${{ github.event.pull_request.base.sha }}
           flutter pub get
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
@@ -158,7 +160,6 @@ jobs:
               if [ -f "$test_path" ]; then
                 echo "Running Golden Test for $component_name (base)"
                 flutter test --update-goldens "$test_path"
-                # Find the actual generated golden file
                 golden_file=$(find "$test_dir/goldens/ci" -type f -name "*.png" | head -n 1)
                 if [ -n "$golden_file" ]; then
                   mkdir -p "$test_dir/failures"
@@ -172,9 +173,9 @@ jobs:
           done
 
       - name: Create test images
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true'
         run: |
-          git checkout -f ${{ github.head_ref }}
+          git checkout -f ${{ github.event.pull_request.head.sha }}
           flutter pub get
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
@@ -184,7 +185,6 @@ jobs:
               if [ -f "$test_path" ]; then
                 echo "Running Golden Test for $component_name (test)"
                 flutter test --update-goldens "$test_path"
-                # Find the actual generated golden file
                 golden_file=$(find "$test_dir/goldens/ci" -type f -name "*.png" | head -n 1)
                 if [ -n "$golden_file" ]; then
                   mkdir -p "$test_dir/failures"
@@ -197,9 +197,9 @@ jobs:
             fi
           done
 
-      - name: Check for UI changes
-        if: steps.changed-files.outputs.any_changed == 'true'
-        id: check-ui-changes
+      - name: Check for image differences
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true'
+        id: check-image-differences
         run: |
           has_changes=false
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
@@ -208,78 +208,79 @@ jobs:
               test_dir="test/views/${component_name}_test"
               master_image="$test_dir/failures/my_app_default_masterImage.png"
               test_image="$test_dir/failures/my_app_default_testImage.png"
-              echo "Checking images for $component_name:"
-              echo "Master image: $master_image"
-              echo "Test image: $test_image"
               if [ -f "$master_image" ] && [ -f "$test_image" ]; then
-                echo "Both images exist"
                 if ! cmp -s "$master_image" "$test_image"; then
-                  echo "Images are different"
                   has_changes=true
                   break
-                else
-                  echo "Images are identical"
-                fi
-              else
-                echo "One or both images are missing"
-                if [ ! -f "$master_image" ]; then
-                  echo "Master image is missing"
-                fi
-                if [ ! -f "$test_image" ]; then
-                  echo "Test image is missing"
                 fi
               fi
             fi
           done
-          echo "has_ui_changes=$has_changes" >> $GITHUB_OUTPUT
-          echo "UI changes detected: $has_changes"
+          echo "has_image_differences=$has_changes" >> $GITHUB_OUTPUT
 
       - name: Commit and push images
-        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && steps.check-image-differences.outputs.has_image_differences == 'true'
+        id: commit-images
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add test/views/*/failures/*.png test/views/*/goldens/ci/*.png pubspec.lock
-          git status
-          git commit -m "test: Update Golden Test images and dependencies [skip ci]"
-          git fetch origin ${{ github.head_ref }}
-          git rebase origin/${{ github.head_ref }}
-          git push -f origin ${{ github.head_ref }}
-
-      - name: Wait for images to be available
-        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
-        run: sleep 10
+          git add test/views/*/failures/*.png
+          git commit -m "test: Update Golden Test images [skip ci]" || echo "No changes to commit"
+          git push origin HEAD:${{ github.head_ref }} || echo "No changes to push"
+          # Store the new commit SHA
+          echo "new_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
       - name: Generate comparison markdown
-        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && steps.check-image-differences.outputs.has_image_differences == 'true'
         id: generate-markdown
         run: |
           echo "Generating comparison markdown..."
-          markdown=""
-          repo_url="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.head_ref }}"
-          commit_sha=$(git rev-parse HEAD)
+          # Use base SHA for Before images and new commit SHA for After images
+          base_url="https://raw.githubusercontent.com/${{ github.repository }}/${{ github.event.pull_request.base.sha }}"
+          head_url="https://raw.githubusercontent.com/${{ github.repository }}/${{ steps.commit-images.outputs.new_sha }}"
+
+          # Create a JSON array for tables
+          echo "[" > tables.json
+          first=true
 
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             if [[ $file == lib/views/* ]]; then
               component_name=$(basename ${file%.*})
               test_dir="test/views/${component_name}_test"
               if [ -d "$test_dir" ]; then
-                markdown="${markdown}### ${component_name} の変更\n\n"
-                markdown="${markdown}| 変更前 | 変更後 |\n"
-                markdown="${markdown}|--------|--------|\n"
-                markdown="${markdown}|![Before](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_masterImage.png?raw=true)|![After](https://github.com/${{ github.repository }}/blob/$commit_sha/$test_dir/failures/my_app_default_testImage.png?raw=true)|\n\n"
+                if [ "$first" = true ]; then
+                  first=false
+                else
+                  echo "," >> tables.json
+                fi
+                echo "{\"Component\":\"${component_name}\",\"Before\":\"![Before](${base_url}/$test_dir/failures/my_app_default_masterImage.png?raw=true)\",\"After\":\"![After](${head_url}/$test_dir/failures/my_app_default_testImage.png?raw=true)\"}" >> tables.json
               fi
             fi
           done
+          echo "]" >> tables.json
 
-          echo "markdown<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$markdown" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Store the component names for the description
+          changed_components=""
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == lib/views/* ]]; then
+              component_name=$(basename ${file%.*})
+              changed_components="$changed_components- $component_name\n"
+            fi
+          done
+          echo "changed_components=$changed_components" >> $GITHUB_OUTPUT
+
+      - name: Create comparison table
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && steps.check-image-differences.outputs.has_image_differences == 'true'
+        uses: gazab/create-markdown-table@v1
+        id: create_table
+        with:
+          file: ./tables.json
+          columns: '["Component", "Before", "After"]'
 
       - name: Update PR description
-        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && steps.check-image-differences.outputs.has_image_differences == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pr_body="# UI の変更確認
           以下のファイルのUI変更がありました：
@@ -294,4 +295,4 @@ jobs:
       - name: No UI changes detected
         if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes != 'true' && steps.check-new-views.outputs.has_new_views != 'true'
         run: |
-          echo "No UI changes were detected in the Golden Test images."
+          rm -f pr_description.txt tables.json || true
