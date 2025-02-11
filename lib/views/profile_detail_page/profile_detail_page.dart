@@ -32,7 +32,7 @@ class ProfileDetailPage extends StatelessWidget {
                       Colors.black,
                       Colors.transparent,
                     ],
-                    stops: const [0.6, 1.0],
+                    stops: const [0.7, 1.0],
                   ).createShader(rect);
                 },
                 blendMode: BlendMode.dstIn,
@@ -60,7 +60,7 @@ class ProfileDetailPage extends StatelessWidget {
                                 Colors.transparent,
                                 theme.colorScheme.surface,
                               ],
-                              stops: const [0.6, 1.0],
+                              stops: const [0.7, 1.0],
                             ),
                           ),
                         ),
@@ -71,14 +71,22 @@ class ProfileDetailPage extends StatelessWidget {
                           margin: const EdgeInsets.only(bottom: 24),
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.surface,
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                theme.colorScheme.primary.withOpacity(0.2),
+                                theme.colorScheme.tertiary.withOpacity(0.2),
+                              ],
+                            ),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
                                 color:
                                     theme.colorScheme.shadow.withOpacity(0.2),
-                                blurRadius: 24,
-                                offset: const Offset(0, 8),
+                                blurRadius: 32,
+                                offset: const Offset(0, 12),
+                                spreadRadius: -8,
                               ),
                             ],
                           ),
@@ -139,9 +147,10 @@ class ProfileDetailPage extends StatelessWidget {
                               boxShadow: [
                                 BoxShadow(
                                   color:
-                                      theme.colorScheme.shadow.withOpacity(0.1),
-                                  blurRadius: 8,
+                                      theme.colorScheme.shadow.withOpacity(0.2),
+                                  blurRadius: 12,
                                   offset: const Offset(0, 4),
+                                  spreadRadius: -4,
                                 ),
                               ],
                             ),
@@ -201,8 +210,8 @@ class ProfileDetailPage extends StatelessWidget {
                       title: 'スキル',
                       icon: Icons.code_rounded,
                       child: Wrap(
-                        spacing: 8,
-                        runSpacing: 12,
+                        spacing: 12,
+                        runSpacing: 16,
                         children: [
                           _buildSkillChip(context, 'Flutter', 0.9),
                           _buildSkillChip(context, 'Dart', 0.85),
