@@ -36,8 +36,19 @@ jobs:
           files: |
             lib/views/**/*.dart
 
+      - name: Check for UI changes
+        id: check-ui-changes
+        run: |
+          if [[ "${{ steps.changed-files.outputs.any_changed }}" != "true" ]]; then
+            echo "No UI changes detected in views directory. Skipping Golden Tests."
+            echo "has_ui_changes=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "UI changes detected. Proceeding with Golden Tests."
+          echo "has_ui_changes=true" >> $GITHUB_OUTPUT
+
       - name: Check for new views
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true'
         id: check-new-views
         run: |
           has_new_views=false
@@ -55,7 +66,7 @@ jobs:
           echo "has_new_views=$has_new_views" >> $GITHUB_OUTPUT
 
       - name: Initialize Golden images for new views
-        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-new-views.outputs.has_new_views == 'true'
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && steps.check-new-views.outputs.has_new_views == 'true'
         run: |
           git checkout -f ${{ github.head_ref }}
           flutter pub get
@@ -83,7 +94,7 @@ jobs:
           done
 
       - name: Create base images
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true'
         run: |
           git checkout -f ${{ github.base_ref }}
           flutter pub get
@@ -109,7 +120,7 @@ jobs:
           done
 
       - name: Create test images
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true'
         run: |
           git checkout -f ${{ github.head_ref }}
           flutter pub get
@@ -134,9 +145,9 @@ jobs:
             fi
           done
 
-      - name: Check for UI changes
-        if: steps.changed-files.outputs.any_changed == 'true'
-        id: check-ui-changes
+      - name: Check for image differences
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true'
+        id: check-image-differences
         run: |
           has_changes=false
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
@@ -168,27 +179,11 @@ jobs:
               fi
             fi
           done
-          echo "has_ui_changes=$has_changes" >> $GITHUB_OUTPUT
-          echo "UI changes detected: $has_changes"
-
-      - name: Commit and push images
-        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add test/views/*/failures/*.png test/views/*/goldens/ci/*.png pubspec.lock
-          git status
-          git commit -m "test: Update Golden Test images and dependencies [skip ci]"
-          git fetch origin ${{ github.head_ref }}
-          git rebase origin/${{ github.head_ref }}
-          git push -f origin ${{ github.head_ref }}
-
-      - name: Wait for images to be available
-        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
-        run: sleep 10
+          echo "has_image_differences=$has_changes" >> $GITHUB_OUTPUT
+          echo "Image differences detected: $has_changes"
 
       - name: Generate comparison markdown
-        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && (steps.check-image-differences.outputs.has_image_differences == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         id: generate-markdown
         run: |
           echo "Generating comparison markdown..."
@@ -226,7 +221,7 @@ jobs:
           echo "changed_components=$changed_components" >> $GITHUB_OUTPUT
 
       - name: Create comparison table
-        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && (steps.check-image-differences.outputs.has_image_differences == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         uses: gazab/create-markdown-table@v1
         id: create_table
         with:
@@ -234,7 +229,7 @@ jobs:
           columns: '["Component", "Before", "After"]'
 
       - name: Update PR description
-        if: steps.changed-files.outputs.any_changed == 'true' && (steps.check-ui-changes.outputs.has_ui_changes == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && (steps.check-image-differences.outputs.has_image_differences == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -242,7 +237,22 @@ jobs:
           echo -e "$description" > pr_description.txt
           gh pr edit ${{ github.event.pull_request.number }} --body "$(cat pr_description.txt)"
 
-      - name: No UI changes detected
-        if: steps.changed-files.outputs.any_changed == 'true' && steps.check-ui-changes.outputs.has_ui_changes != 'true' && steps.check-new-views.outputs.has_new_views != 'true'
+      - name: Commit and push images
+        if: steps.check-ui-changes.outputs.has_ui_changes == 'true' && (steps.check-image-differences.outputs.has_image_differences == 'true' || steps.check-new-views.outputs.has_new_views == 'true')
         run: |
-          echo "No UI changes were detected in the Golden Test images."
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add test/views/*/failures/*.png test/views/*/goldens/ci/*.png pubspec.lock
+            git commit -m "test: Update Golden Test images and dependencies [skip ci]"
+            git fetch origin ${{ github.head_ref }}
+            git rebase origin/${{ github.head_ref }}
+            git push -f origin ${{ github.head_ref }}
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: No UI changes detected
+        if: steps.check-ui-changes.outputs.has_ui_changes != 'true'
+        run: |
+          echo "No UI changes were detected in the views directory. Skipping Golden Tests."
