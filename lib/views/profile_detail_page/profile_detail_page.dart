@@ -441,16 +441,17 @@ class ProfileDetailPage extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            theme.colorScheme.surface,
-            theme.colorScheme.surfaceVariant.withOpacity(0.5),
+            theme.colorScheme.primary.withOpacity(0.1),
+            theme.colorScheme.tertiary.withOpacity(0.05),
           ],
+          stops: const [0.3, 1.0],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
+            color: theme.colorScheme.shadow.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
             spreadRadius: -4,
           ),
         ],
@@ -468,7 +469,8 @@ class ProfileDetailPage extends StatelessWidget {
               Text(
                 label,
                 style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.3,
                 ),
               ),
               Container(
@@ -482,14 +484,16 @@ class ProfileDetailPage extends StatelessWidget {
                       theme.colorScheme.primary,
                       theme.colorScheme.tertiary,
                     ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: theme.colorScheme.primary.withOpacity(0.2),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                      spreadRadius: -2,
+                      color: theme.colorScheme.primary.withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                      spreadRadius: -4,
                     ),
                   ],
                 ),
@@ -497,7 +501,7 @@ class ProfileDetailPage extends StatelessWidget {
                   '${(level * 100).toInt()}%',
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -505,24 +509,32 @@ class ProfileDetailPage extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Container(
+            height: 8,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
               gradient: LinearGradient(
                 colors: [
-                  theme.colorScheme.primaryContainer.withOpacity(0.2),
-                  theme.colorScheme.tertiaryContainer.withOpacity(0.2),
+                  theme.colorScheme.primaryContainer.withOpacity(0.3),
+                  theme.colorScheme.tertiaryContainer.withOpacity(0.3),
                 ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(6),
-              child: LinearProgressIndicator(
-                value: level,
-                backgroundColor: Colors.transparent,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  theme.colorScheme.primary,
+              child: TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 800),
+                curve: Curves.easeOutCubic,
+                tween: Tween<double>(begin: 0, end: level),
+                builder: (context, value, _) => LinearProgressIndicator(
+                  value: value,
+                  backgroundColor: Colors.transparent,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    theme.colorScheme.primary,
+                  ),
+                  minHeight: 8,
                 ),
-                minHeight: 8,
               ),
             ),
           ),
