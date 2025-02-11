@@ -178,6 +178,10 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add test/views/*/failures/*.png test/views/*/goldens/ci/*.png pubspec.lock
           git status
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
           git commit -m "test: Update Golden Test images and dependencies [skip ci]"
           git fetch origin ${{ github.head_ref }}
           git rebase origin/${{ github.head_ref }}
