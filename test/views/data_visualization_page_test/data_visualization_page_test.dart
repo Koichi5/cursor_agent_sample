@@ -1,12 +1,12 @@
 import 'package:alchemist/alchemist.dart';
-import 'package:cursor_agent_sample/views/app_settings_page/app_settings_page.dart';
+import 'package:cursor_agent_sample/views/data_visualization_page/data_visualization_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/alchemist/golden_test_device_scenario.dart';
 
 void main() {
-  group('AppSettingsPage Golden Test', () {
+  group('DataVisualizationPage Golden Test', () {
     Widget buildMyApp() {
       return MaterialApp(
         theme: ThemeData(
@@ -16,7 +16,7 @@ void main() {
             brightness: Brightness.light,
           ),
         ),
-        home: const AppSettingsPage(title: 'アプリ設定'),
+        home: const DataVisualizationPage(),
       );
     }
 
@@ -24,7 +24,7 @@ void main() {
 
     goldenTest(
       'Default',
-      fileName: 'app_settings_page_default',
+      fileName: 'data_visualization_page_default',
       builder: () {
         return GoldenTestGroup(
           columns: 1,

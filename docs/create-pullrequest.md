@@ -7,10 +7,23 @@ globs:
 
 まず、このファイルを参照したら、「Pull Request 作成手順のファイルを確認しました！」と報告してください。
 
-### 差分の確認
+### 変更内容の確認
 
 - {{マージ先ブランチ}}に関する指定がない場合は、どのブランチに対して PullRequest を作成するか必ず聞き返してください。
 - `git diff origin/{{マージ先ブランチ}}...HEAD | cat` でマージ先ブランチとの差分を確認
+
+### Golden Test の実装と実行
+
+- 変更内容に`lib/views/**`のファイルが含まれているかを確認
+- 新規作成された View がある場合：
+
+  1. `test/views/{view_name}_test/{view_name}_test.dart`に Golden Test を実装
+  2. `flutter test --update-goldens test/views/{view_name}_test/{view_name}_test.dart`を実行
+
+- 既存の View が変更された場合：
+  1. `flutter test --tags=golden`を実行して変更の影響を確認
+  2. 意図した変更であることを確認
+  3. `flutter test --update-goldens --tags=golden`を実行して Golden Image を更新
 
 ### Pull Request 作成とブラウザでの表示
 

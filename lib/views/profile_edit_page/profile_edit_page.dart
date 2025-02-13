@@ -12,7 +12,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _bioController;
-  bool _isEditing = false;
 
   @override
   void initState() {
@@ -165,7 +164,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 onPressed: () {
                   if (_formKey.currentState?.validate() ?? false) {
                     setState(() {
-                      _isEditing = false;
                     });
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
