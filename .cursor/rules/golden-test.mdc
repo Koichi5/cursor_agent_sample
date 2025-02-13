@@ -1,5 +1,5 @@
 ---
-description: 
+description: Golden Test の実装方法
 globs: 
 ---
 
@@ -27,4 +27,4 @@ Flutter にて画面差分やデザインの崩れがないかを確認するた
 
 以上が Golden Test の実行内容です。
 
-viewsディレクトリ配下で変更があった場合のみ Golden Test を実行するようにできれば理想的です。しかし、課題を細分化するためにこの実装は当面考えていません。
+Golden Test の実装は [my_home_page.dart](mdc:lib/views/my_home_page/my_home_page.dart), [my_home_page_test.dart](mdc:test/views/my_home_page_test/my_home_page_test.dart) の内容を参考にして実装してください。
