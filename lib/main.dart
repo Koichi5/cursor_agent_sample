@@ -1,3 +1,4 @@
+import 'package:cursor_agent_sample/views/counter_page/counter_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cursor_agent_sample/views/my_home_page/my_home_page.dart';
 import 'package:cursor_agent_sample/views/profile_page/profile_page.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         colorSchemeSeed: Colors.deepPurple,
       ),
-      home: const RootPage(),
+      home: const CounterPage(),
     );
   }
 }
