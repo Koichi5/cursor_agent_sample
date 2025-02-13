@@ -33,10 +33,8 @@ globs:
 - PR の本文は一時ファイルを使用して作成することを推奨
 
   ```bash
-  # PR本文を一時ファイルに保存
-  cat > pr_body.txt << 'EOL'
-  {{PRテンプレートの内容}}
-  EOL
+  # PR本文を一時ファイルに保存（より確実な方法）
+  echo '{{PRテンプレートの内容}}' > pr_body.txt
 
   # PRの作成
   git push origin HEAD && \
