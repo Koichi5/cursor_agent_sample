@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../support/alchemist/golden_test_device_scenario.dart';
 
-@Tags(['golden'])
 void main() {
   group('ProfileDetailPage Golden Test', () {
     Widget buildMyApp() {
