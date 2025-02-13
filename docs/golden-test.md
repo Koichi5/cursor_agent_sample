@@ -26,5 +26,3 @@ Flutter にて画面差分やデザインの崩れがないかを確認するた
 6. ステップ3で行ったUIの変更をPRを通してチームメンバーに共有し、その変更に問題がなければPRをマージし、同時に `flutter test --update-goldens --tags=golden` を実行します。これで Golden Image が更新されます。つまり、Golden Test の master 画像が変更後の画像に切り替わります。
 
 以上が Golden Test の実行内容です。
-
-viewsディレクトリ配下で変更があった場合のみ Golden Test を実行するようにできれば理想的です。しかし、課題を細分化するためにこの実装は当面考えていません。
